@@ -1,0 +1,439 @@
+<title>Lunch Box English</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;700;800&display=swap">
+<style>
+/* Layout: a lunch tray — the map is a grid of tray compartments (A–H, one per worksheet section); each game is one big plate card. Single bright light theme by choice. */
+:root{
+  --tray:#DCEFE4;      /* mint lunch tray */
+  --tray-line:#C3E2D0;
+  --plate:#FFFFFF;
+  --ink:#24323F;
+  --soft:#5D6B78;
+  --tomato:#E5483B;
+  --mustard:#F2B632;
+  --leaf:#3B9358;
+  --sky:#3C8DD8;
+  --plum:#7B4FA6;
+  --peach:#FBE3D3;
+  --good:#2F9E57; --good-bg:#DDF5E5;
+  --bad:#D63A2F;  --bad-bg:#FCE1DE;
+  --font-display:"Baloo 2","Arial Rounded MT Bold","Trebuchet MS",sans-serif;
+  --font-body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{
+  background:var(--tray);
+  background-image:radial-gradient(var(--tray-line) 1.2px,transparent 1.4px);
+  background-size:18px 18px;
+  color:var(--ink);font-family:var(--font-body);font-size:16px;
+  padding-inline:16px;padding-block:12px 40px;
+}
+.wrap{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+
+/* top bar */
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0;background:none;border:0;padding:0;text-align:left}
+.brand .box{width:46px;height:46px;border-radius:12px;background:var(--tomato);display:grid;place-items:center;font-size:26px;box-shadow:0 4px 0 #B8342A}
+.brand h1{font-family:var(--font-display);font-weight:800;font-size:1.6rem;line-height:1;margin:0}
+.brand small{display:block;font-weight:700;color:var(--soft);font-size:.82rem;margin-top:3px}
+.pill{display:flex;align-items:center;gap:6px;background:var(--plate);border-radius:999px;padding:6px 14px;font-weight:800;box-shadow:0 3px 0 var(--tray-line);font-variant-numeric:tabular-nums}
+.icon-btn{border:0;background:var(--plate);width:42px;height:42px;border-radius:50%;font-size:20px;box-shadow:0 3px 0 var(--tray-line)}
+
+/* map */
+.hello{background:var(--plate);border-radius:22px;padding:18px 20px;display:flex;gap:16px;align-items:center;box-shadow:0 6px 0 var(--tray-line)}
+.hello .kids{font-size:52px;line-height:1;flex-shrink:0}
+.hello h2{font-family:var(--font-display);font-size:1.45rem;margin:0;line-height:1.15;text-wrap:balance}
+.hello p{margin:4px 0 0;color:var(--soft);font-weight:700}
+.tray{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:#BFE0CB;padding:12px;border-radius:26px;box-shadow:inset 0 3px 0 rgba(0,0,0,.06)}
+.cell{border:0;background:var(--plate);border-radius:18px;padding:14px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;box-shadow:0 5px 0 rgba(36,50,63,.12);transition:transform .15s}
+.cell:hover{transform:translateY(-3px)}
+.cell .tag{align-self:flex-start;font-family:var(--font-display);font-weight:800;color:#fff;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:1.05rem;line-height:1}
+.cell .ic{font-size:44px;margin-top:-8px}
+.cell b{font-family:var(--font-display);font-size:1.08rem;line-height:1.1}
+.cell span.id{font-size:.76rem;color:var(--soft);font-weight:700;line-height:1.2}
+.stars{letter-spacing:2px;font-size:1rem;color:#D9DEE2}
+.stars .on{color:var(--mustard)}
+.hint{font-size:.85rem;color:var(--soft);font-weight:700;text-align:center;margin:0}
+
+/* food icons */
+.ic{display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.ic svg{width:1em;height:1em}
+
+/* play screen */
+.head{display:flex;align-items:center;gap:12px}
+.back{border:0;background:var(--plate);border-radius:12px;padding:8px 12px;font-weight:800;box-shadow:0 3px 0 var(--tray-line)}
+.head .tag{font-family:var(--font-display);font-weight:800;color:#fff;min-width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:1.3rem}
+.head h2{font-family:var(--font-display);font-size:1.35rem;margin:0;line-height:1.1}
+.head p{margin:2px 0 0;font-size:.85rem;color:var(--soft);font-weight:700;line-height:1.3}
+.head .t{flex:1;min-width:0}
+.progress{height:12px;background:var(--plate);border-radius:99px;overflow:hidden;box-shadow:inset 0 2px 0 rgba(0,0,0,.05)}
+.progress i{display:block;height:100%;background:var(--leaf);border-radius:99px;transition:width .35s}
+.plate{background:var(--plate);border-radius:26px;padding:22px 18px;box-shadow:0 7px 0 var(--tray-line);display:flex;flex-direction:column;align-items:center;gap:18px}
+.pic{min-height:130px;display:flex;align-items:center;justify-content:center}
+.big{font-size:104px;filter:drop-shadow(0 6px 0 rgba(36,50,63,.08))}
+.scene{position:relative;display:flex;align-items:flex-end;gap:2px;background:var(--peach);border-radius:24px;padding:14px 26px 10px}
+.scene .who{font-size:86px;line-height:1}
+.scene .food{font-size:58px;margin-bottom:6px}
+.scene .mark{position:absolute;top:-12px;right:-12px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:26px;font-weight:800;color:#fff;border:4px solid var(--plate)}
+.mark.yes{background:var(--good)} .mark.no{background:var(--bad)}
+.prompt{font-family:var(--font-display);font-weight:600;font-size:1.55rem;text-align:center;line-height:1.25;display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;text-wrap:balance}
+.blank{display:inline-block;min-width:78px;border-bottom:4px dashed var(--mustard);color:var(--leaf);font-weight:800;text-align:center}
+.say{border:0;background:var(--sky);color:#fff;width:40px;height:40px;border-radius:50%;font-size:18px;flex-shrink:0;box-shadow:0 3px 0 #2A6BA8}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:560px}
+.opts.one{grid-template-columns:1fr}
+.opt{border:3px solid #E3E8EC;background:var(--plate);border-radius:16px;padding:14px 12px;font-weight:800;font-size:1.15rem;box-shadow:0 4px 0 #E3E8EC;transition:transform .1s;min-width:0}
+.opts.one .opt{text-align:left;font-size:1.05rem;padding:12px 16px}
+.opt:hover:not(:disabled){transform:translateY(-2px);border-color:var(--sky)}
+.opt:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #E3E8EC}
+.opt.right{background:var(--good-bg);border-color:var(--good);box-shadow:0 4px 0 var(--good);color:#1E6B3A}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad);box-shadow:0 4px 0 var(--bad);color:#9B2A22;animation:shake .35s}
+.opt:disabled{cursor:default}
+.opt.yes{color:var(--good)} .opt.no{color:var(--bad)}
+.opt.yes,.opt.no{font-family:var(--font-display);font-size:1.5rem;padding:10px}
+.cheer{min-height:1.6em;font-family:var(--font-display);font-weight:800;font-size:1.2rem;color:var(--leaf);margin:0;text-align:center}
+.cheer.oops{color:var(--bad)}
+@keyframes shake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .4s ease-out}
+
+/* story */
+.story{width:100%;background:#F4EEFA;border-radius:18px;padding:14px 16px}
+.story summary{font-family:var(--font-display);font-weight:800;font-size:1.15rem;cursor:pointer;color:var(--plum)}
+.story p{margin:8px 0 0;line-height:1.6;font-weight:700;font-size:1.02rem}
+.story .row{font-size:30px;margin-top:6px;letter-spacing:4px}
+
+/* arrange */
+.line{width:100%;max-width:600px;min-height:66px;border:3px dashed var(--tray-line);border-radius:16px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;background:#F7FBF8}
+.line.bad{animation:shake .35s;border-color:var(--bad)}
+.line.good{border-style:solid;border-color:var(--good);background:var(--good-bg)}
+.bank{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:600px}
+.tile{border:0;border-radius:12px;padding:10px 14px;font-weight:800;font-size:1.15rem;background:var(--mustard);color:#4A3500;box-shadow:0 4px 0 #C38E17}
+.line .tile{background:var(--sky);color:#fff;box-shadow:0 4px 0 #2A6BA8}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{border:0;border-radius:14px;padding:12px 22px;font-weight:800;font-size:1.05rem;background:var(--leaf);color:#fff;box-shadow:0 4px 0 #276B3F}
+.btn.ghost{background:#EEF2F4;color:var(--ink);box-shadow:0 4px 0 #D6DDE2}
+.btn.red{background:var(--tomato);box-shadow:0 4px 0 #B8342A}
+.btn:disabled{opacity:.45;cursor:default}
+
+/* match */
+.match{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px;width:100%;max-width:520px}
+.col{display:flex;flex-direction:column;gap:10px}
+.mcard{border:3px solid #E3E8EC;background:var(--plate);border-radius:16px;min-height:62px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;box-shadow:0 4px 0 #E3E8EC;padding:6px}
+.mcard .ic{font-size:40px}
+.mcard.sel{border-color:var(--sky);box-shadow:0 4px 0 var(--sky);transform:translateY(-2px)}
+.mcard.done{background:var(--good-bg);border-color:var(--good);box-shadow:0 4px 0 var(--good);cursor:default}
+.mcard.wrong{animation:shake .35s;border-color:var(--bad)}
+
+/* result */
+.result{text-align:center}
+.result .big-stars{font-size:62px;letter-spacing:6px;color:#D9DEE2}
+.result .big-stars .on{color:var(--mustard);display:inline-block;animation:pop .5s both}
+.result h2{font-family:var(--font-display);font-size:2rem;margin:0}
+.result p{margin:0;color:var(--soft);font-weight:700}
+canvas#fx{position:fixed;inset:0;pointer-events:none;width:100%;height:100%;z-index:5}
+
+@media (max-width:640px){
+  .tray{grid-template-columns:repeat(2,1fr)}
+  .prompt{font-size:1.3rem}
+  .big{font-size:88px}
+  .scene .who{font-size:72px}.scene .food{font-size:48px}
+  .opt{font-size:1.02rem}
+  .brand h1{font-size:1.35rem}
+  .hello .kids{font-size:40px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <div class="bar">
+    <button class="brand" id="home" aria-label="Back to the menu">
+      <span class="box">🍱</span>
+      <span><h1>Lunch Box English</h1><small>Grade 3 · Unit 3: Lunch</small></span>
+    </button>
+    <span class="pill" title="Total stars">⭐ <span id="total">0</span>/24</span>
+    <button class="icon-btn" id="mute" aria-label="Sound on or off">🔊</button>
+  </div>
+  <main id="view" class="wrap" style="gap:16px"></main>
+</div>
+<canvas id="fx"></canvas>
+
+<script>
+/* ---------- data ---------- */
+const SVG={
+  crackers:`<svg viewBox="0 0 64 64"><rect x="6" y="12" width="34" height="34" rx="4" fill="#E2A947" stroke="#A9741F" stroke-width="2.5" transform="rotate(-10 23 29)"/><rect x="22" y="20" width="36" height="36" rx="4" fill="#F2C462" stroke="#A9741F" stroke-width="2.5"/><g fill="#B98327"><circle cx="31" cy="29" r="2"/><circle cx="40" cy="29" r="2"/><circle cx="49" cy="29" r="2"/><circle cx="31" cy="38" r="2"/><circle cx="40" cy="38" r="2"/><circle cx="49" cy="38" r="2"/><circle cx="31" cy="47" r="2"/><circle cx="40" cy="47" r="2"/><circle cx="49" cy="47" r="2"/></g></svg>`,
+  chips:`<svg viewBox="0 0 64 64"><path d="M15 6h34l-3 7 4 37-3 8H17l-3-8 4-37z" fill="#F4C430" stroke="#B5352B" stroke-width="2.5" stroke-linejoin="round"/><rect x="16" y="20" width="32" height="14" rx="3" fill="#D63A2F"/><text x="32" y="31" font-size="9.5" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-weight="700">CHIPS</text><ellipse cx="27" cy="45" rx="7" ry="4.5" fill="#E79B32" transform="rotate(-15 27 45)"/><ellipse cx="37" cy="46" rx="7" ry="4.5" fill="#F0B54A" transform="rotate(12 37 46)"/></svg>`
+};
+const FOODS=[
+  {n:'pizza',e:'🍕'},{n:'spaghetti',e:'🍝'},{n:'cheese',e:'🧀'},{n:'salad',e:'🥗'},
+  {n:'noodles',e:'🍜'},{n:'chicken',e:'🍗'},{n:'pretzels',e:'🥨'},{n:'crackers',s:'crackers'},
+  {n:'grapes',e:'🍇'},{n:'watermelon',e:'🍉'},{n:'peanuts',e:'🥜'},{n:'potato chips',s:'chips'}
+];
+const PEOPLE=[{p:'He',o:'he',e:'👦'},{p:'She',o:'she',e:'👧'}];
+const ic=f=>`<span class="ic">${f.s?SVG[f.s]:f.e}</span>`;
+const STORY=`Today is Saturday. Riko and Sari have a picnic lunch in the park. Riko has some pizza, some crackers, and some chicken. He doesn't have any grapes. Sari has some watermelon and some salad. She also has some cheese, but she doesn't have any pretzels. They are happy and enjoy their lunch together.`;
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const view=$('#view');
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const sample=(a,n)=>shuffle(a).slice(0,n);
+const food=n=>FOODS.find(f=>f.n===n);
+const scene=(per,f,has)=>`<div class="scene pop"><span class="who">${per.e}</span><span class="food">${ic(f)}</span><span class="mark ${has?'yes':'no'}" aria-label="${has?'has it':'does not have it'}">${has?'✓':'✗'}</span></div>`;
+const bigFood=f=>`<span class="big pop">${ic(f)}</span>`;
+const PRAISE=['Great job!','Well done!','Yummy! Correct!','Super!','You got it!','Excellent!'];
+
+/* ---------- sound & voice ---------- */
+let muted=false, actx=null;
+try{muted=localStorage.getItem('lbe-muted')==='1'}catch(e){}
+function tone(f,d,t='sine',when=0,vol=.18){
+  if(muted)return;
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    const o=actx.createOscillator(),g=actx.createGain();o.type=t;o.frequency.value=f;
+    const s=actx.currentTime+when;g.gain.setValueAtTime(vol,s);g.gain.exponentialRampToValueAtTime(.001,s+d);
+    o.connect(g).connect(actx.destination);o.start(s);o.stop(s+d);}catch(e){}
+}
+const sfx={good(){tone(660,.15,'triangle');tone(990,.22,'triangle',.11)},bad(){tone(180,.25,'square',0,.08)},
+  win(){[523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',i*.12))},tap(){tone(440,.06,'sine',0,.08)}};
+function speak(t){
+  if(muted||!('speechSynthesis' in window))return;
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/___/g,'blank'));u.lang='en-US';u.rate=.85;
+    const v=speechSynthesis.getVoices().find(v=>/^en(-|_)/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u);}catch(e){}
+}
+function setMute(){$('#mute').textContent=muted?'🔇':'🔊';try{localStorage.setItem('lbe-muted',muted?'1':'0')}catch(e){}}
+$('#mute').onclick=()=>{muted=!muted;setMute();if(muted&&'speechSynthesis' in window)speechSynthesis.cancel()};
+setMute();
+
+/* ---------- stars storage ---------- */
+let STARS=[0,0,0,0,0,0,0,0];
+try{const s=JSON.parse(localStorage.getItem('lbe-stars'));if(Array.isArray(s)&&s.length===8)STARS=s}catch(e){}
+function saveStars(){try{localStorage.setItem('lbe-stars',JSON.stringify(STARS))}catch(e){}$('#total').textContent=STARS.reduce((a,b)=>a+b,0)}
+const starHTML=n=>`<span class="stars">${[0,1,2].map(i=>`<span class="${i<n?'on':''}">★</span>`).join('')}</span>`;
+
+/* ---------- question generators ---------- */
+function genNames(){
+  return sample(FOODS,8).map(f=>({type:'mc',pic:bigFood(f),prompt:'What is it?',
+    options:shuffle([f.n,...sample(FOODS.filter(x=>x!==f),3).map(x=>x.n)]),answer:f.n,say:f.n}));
+}
+function genYN(){
+  return Array.from({length:8},()=>{
+    const per=rnd(PEOPLE),f=rnd(FOODS),has=Math.random()<.5,pos=Math.random()<.5;
+    const st=pos?`${per.p} has some ${f.n}.`:`${per.p} doesn't have any ${f.n}.`;
+    return {type:'mc',yn:true,pic:scene(per,f,has),prompt:st,say:st,listen:st,options:['Yes','No'],answer:has===pos?'Yes':'No'};
+  });
+}
+function genSomeAny(){
+  const T={some:['He has ___ {f}.','She has ___ {f}.','We have ___ {f}.','I have ___ {f}.','They have ___ {f}.'],
+           any:["He doesn't have ___ {f}.","She doesn't have ___ {f}.","They don't have ___ {f}.","I don't have ___ {f}.",'Does he have ___ {f}?','Does she have ___ {f}?','Do you have ___ {f}?']};
+  return sample(FOODS,8).map((f,i)=>{
+    const ans=i%2?'any':'some'; const t=rnd(T[ans]).replace('{f}',f.n);
+    return {type:'mc',pic:bigFood(f),prompt:t.replace('___','<span class="blank" id="blank">?</span>'),
+      full:t.replace('___',ans),options:['some','any'],answer:ans};
+  }).sort(()=>Math.random()-.5);
+}
+function genPick(){
+  return sample(FOODS,6).map(f=>{
+    const per=rnd(PEOPLE),oth=PEOPLE.find(p=>p!==per),has=Math.random()<.5;
+    const opts=has
+      ?[`${per.p} has some ${f.n}.`,`${per.p} doesn't have any ${f.n}.`,`${oth.p} has some ${f.n}.`,`${per.p} has any ${f.n}.`]
+      :[`${per.p} doesn't have any ${f.n}.`,`${per.p} has some ${f.n}.`,`${oth.p} doesn't have any ${f.n}.`,`${per.p} doesn't have some ${f.n}.`];
+    return {type:'mc',one:true,pic:scene(per,f,has),prompt:'Choose the correct sentence.',options:shuffle(opts),answer:opts[0],say:opts[0]};
+  });
+}
+function genMatch(){return [{type:'match',foods:sample(FOODS,6)}]}
+function genArrange(){
+  return sample(FOODS,6).map((f,i)=>{
+    const per=rnd(PEOPLE),k=i%3;
+    const w=k===0?[per.p,'has','some',f.n,'.']:k===1?[per.p,"doesn't",'have','any',f.n,'.']:['Does',per.o,'have','any',f.n,'?'];
+    return {type:'arrange',pic:bigFood(f),words:w,answer:w.join(' ').replace(/ ([.?])$/,'$1')};
+  });
+}
+function genAsk(){
+  return Array.from({length:8},()=>{
+    const per=rnd(PEOPLE),f=rnd(FOODS),has=Math.random()<.5;
+    const q=`Does ${per.o} have any ${f.n}?`,a=`${has?'Yes':'No'}, ${per.o} ${has?'does':"doesn't"}.`;
+    return {type:'mc',pic:scene(per,f,has),prompt:q,say:q,listen:q,options:['Yes, he does.',"No, he doesn't.",'Yes, she does.',"No, she doesn't."],answer:a,sayAfter:a};
+  });
+}
+function genStory(){
+  const Q=[
+    ['What day is it?',['Saturday','Sunday','Monday','Friday'],'Saturday'],
+    ['Where do Riko and Sari have lunch?',['In the park','At school','At home','In the kitchen'],'In the park'],
+    ['What does Riko have?',['Pizza, crackers, and chicken','Watermelon, salad, and cheese','Grapes and pretzels','Noodles and peanuts'],'Pizza, crackers, and chicken'],
+    ['Does Riko have any grapes?',["No, he doesn't.",'Yes, he does.',"No, she doesn't.",'Yes, she does.'],"No, he doesn't."],
+    ['What does Sari have?',['Watermelon, salad, and cheese','Pizza, crackers, and chicken','Spaghetti and grapes','Potato chips and noodles'],'Watermelon, salad, and cheese'],
+    ['Does Sari have any pretzels?',["No, she doesn't.",'Yes, she does.',"No, he doesn't.",'Yes, he does.'],"No, she doesn't."],
+    ['Does Sari have any cheese?',['Yes, she does.',"No, she doesn't.",'Yes, he does.',"No, he doesn't."],'Yes, she does.'],
+    ['How do Riko and Sari feel?',['Happy','Sad','Angry','Sleepy'],'Happy']
+  ];
+  return Q.map(([q,o,a])=>({type:'mc',one:true,story:true,pic:'',prompt:q,say:q,listen:q,options:shuffle(o),answer:a}));
+}
+
+const LEVELS=[
+  {k:'A',t:'Food Names',en:'Look at the picture. Choose the correct word.',id:'Lihat gambar. Pilih kata yang tepat.',c:'var(--tomato)',f:'pizza',gen:genNames},
+  {k:'B',t:'Yes or No',en:'Look at the picture. Choose Yes or No.',id:'✓ = punya, ✗ = tidak punya. Pilih Yes atau No.',c:'var(--sky)',f:'grapes',gen:genYN},
+  {k:'C',t:'Some or Any',en:'Complete the sentence with some or any.',id:'some → kalimat positif. any → kalimat negatif & pertanyaan.',c:'var(--leaf)',f:'pretzels',gen:genSomeAny},
+  {k:'D',t:'Right Sentence',en:'Choose the correct sentence.',id:'Pilih kalimat yang tepat sesuai gambar.',c:'#D9468A',f:'cheese',gen:genPick},
+  {k:'E',t:'Match It',en:'Match the pictures with the words.',id:'Ketuk gambar, lalu ketuk kata yang cocok.',c:'var(--plum)',f:'watermelon',gen:genMatch},
+  {k:'F',t:'Word Train',en:'Arrange the words. Make a sentence.',id:'Ketuk kata-kata untuk menyusun kalimat.',c:'#2B8C8C',f:'crackers',gen:genArrange},
+  {k:'G',t:'Ask & Answer',en:'Look at the picture. Answer the question.',id:'Jawab: Yes, he/she does atau No, he/she doesn\'t.',c:'#E07A1F',f:'potato chips',gen:genAsk},
+  {k:'H',t:'Picnic Story',en:'Read the story. Answer the questions.',id:'Baca cerita "A Picnic Lunch", lalu jawab.',c:'var(--plum)',f:'chicken',gen:genStory}
+];
+
+/* ---------- screens ---------- */
+let S=null;
+function renderMap(){
+  S=null;
+  const done=STARS.filter(s=>s>0).length;
+  view.innerHTML=`
+  <section class="hello"><span class="kids">👦🍕👧</span>
+    <div><h2>${done===8?'You finished every lunch box!':'Pick a lunch box and start!'}</h2>
+    <p>Belajar nama makanan dan kalimat <b>some / any</b> lewat 8 permainan.</p></div></section>
+  <section class="tray">${LEVELS.map((L,i)=>`
+    <button class="cell" data-i="${i}" aria-label="Game ${L.k}: ${L.t}">
+      <span class="tag" style="background:${L.c}">${L.k}</span>
+      ${ic(food(L.f))}<b>${L.t}</b><span class="id">${L.en.split('.')[0]}</span>${starHTML(STARS[i])}
+    </button>`).join('')}</section>
+  <p class="hint">Tap 🔊 to hear the words · Ketuk 🔊 untuk mendengar pengucapan</p>`;
+  view.querySelectorAll('.cell').forEach(b=>b.onclick=()=>{sfx.tap();start(+b.dataset.i)});
+}
+function start(i){
+  const L=LEVELS[i];
+  S={i,L,qs:L.gen(),qi:0,miss:0,steps:0,total:0};
+  S.total=S.qs[0].type==='match'?S.qs[0].foods.length:S.qs.length;
+  renderQ();
+}
+function header(){
+  const L=S.L,pct=Math.round(S.steps/S.total*100);
+  return `<div class="head"><button class="back" id="back" aria-label="Back to menu">← Menu</button>
+    <span class="tag" style="background:${L.c}">${L.k}</span>
+    <div class="t"><h2>${L.t}</h2><p>${L.en}<br>${L.id}</p></div></div>
+    <div class="progress" aria-label="Progress"><i style="width:${pct}%"></i></div>`;
+}
+function bindBack(){$('#back').onclick=()=>{sfx.tap();renderMap()}}
+function renderQ(){
+  const q=S.qs[S.qi];
+  if(q.type==='mc')return renderMC(q);
+  if(q.type==='arrange')return renderArrange(q);
+  if(q.type==='match')return renderMatch(q);
+}
+function next(){S.qi++;S.steps++;if(S.qi>=S.qs.length)finish();else renderQ()}
+
+function renderMC(q){
+  const cls=q.yn?'':q.one?'one':'';
+  view.innerHTML=header()+`<section class="plate">
+    ${q.story?`<details class="story" open><summary>📖 A Picnic Lunch</summary><div class="row">🧺🌳👦🍕🍗👧🍉🥗🧀</div><p>${STORY}</p></details>`:''}
+    ${q.pic?`<div class="pic">${q.pic}</div>`:''}
+    <div class="prompt"><span id="ptxt">${q.prompt}</span>${q.listen||q.full?`<button class="say" id="say" aria-label="Listen">🔊</button>`:''}</div>
+    <div class="opts ${cls}">${q.options.map((o,i)=>`<button class="opt ${q.yn?o.toLowerCase():''}" data-i="${i}">${q.yn?(o==='Yes'?'✓ Yes':'✗ No'):o}</button>`).join('')}</div>
+    <p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+  bindBack();
+  const sb=$('#say');if(sb)sb.onclick=()=>speak(q.full?q.prompt.replace(/<[^>]+>\?<\/span>/,'___').replace(/<[^>]+>/g,''):q.listen);
+  view.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const v=q.options[+b.dataset.i];
+    if(v===q.answer){
+      b.classList.add('right');view.querySelectorAll('.opt').forEach(x=>x.disabled=true);sfx.good();
+      if(q.full){const bl=$('#blank');bl.textContent=q.answer;bl.classList.add('pop')}
+      const c=$('#cheer');c.className='cheer pop';c.textContent=rnd(PRAISE);
+      speak(q.sayAfter||q.full||q.say||q.answer);
+      setTimeout(next,q.one||q.full||q.sayAfter?1700:1200);
+    }else{
+      b.classList.add('wrong');b.disabled=true;S.miss++;sfx.bad();
+      const c=$('#cheer');c.className='cheer oops';c.textContent='Try again! Coba lagi!';
+    }
+  });
+}
+
+function renderArrange(q){
+  const tiles=shuffle(q.words.map((w,id)=>({w,id})));
+  let placed=[];
+  view.innerHTML=header()+`<section class="plate">
+    <div class="pic">${q.pic}</div>
+    <div class="line" id="line" aria-label="Your sentence"></div>
+    <div class="bank" id="bank"></div>
+    <div class="actions"><button class="btn ghost" id="reset">↺ Reset</button><button class="btn" id="check" disabled>Check ✓</button></div>
+    <p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+  bindBack();
+  const line=$('#line'),bank=$('#bank'),check=$('#check');
+  function draw(){
+    line.className='line';
+    line.innerHTML=placed.map(t=>`<button class="tile" data-id="${t.id}">${t.w}</button>`).join('')||'<span class="hint">Tap the words below · Ketuk kata di bawah</span>';
+    bank.innerHTML=tiles.filter(t=>!placed.includes(t)).map(t=>`<button class="tile" data-id="${t.id}">${t.w}</button>`).join('');
+    check.disabled=placed.length!==tiles.length;
+    line.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{sfx.tap();placed=placed.filter(t=>t.id!=b.dataset.id);draw()});
+    bank.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{sfx.tap();speak(b.textContent.replace(/[.?]/,''));placed.push(tiles.find(t=>t.id==b.dataset.id));draw()});
+  }
+  draw();
+  $('#reset').onclick=()=>{placed=[];draw()};
+  check.onclick=()=>{
+    const s=placed.map(t=>t.w).join(' ').replace(/ ([.?])$/,'$1');
+    const c=$('#cheer');
+    if(s===q.answer){line.className='line good';sfx.good();c.className='cheer pop';c.textContent=rnd(PRAISE);
+      check.disabled=true;$('#reset').disabled=true;line.querySelectorAll('.tile').forEach(b=>b.disabled=true);
+      speak(q.answer);setTimeout(next,1900);}
+    else{S.miss++;sfx.bad();line.className='line bad';c.className='cheer oops';c.textContent='Not yet. Try again! Belum tepat.';}
+  };
+}
+
+function renderMatch(q){
+  const pics=shuffle(q.foods),words=shuffle(q.foods);
+  let sel=null,matched=new Set();
+  view.innerHTML=header()+`<section class="plate">
+    <div class="match"><div class="col">${pics.map(f=>`<button class="mcard" data-side="p" data-n="${f.n}" aria-label="Picture">${ic(f)}</button>`).join('')}</div>
+    <div class="col">${words.map(f=>`<button class="mcard" data-side="w" data-n="${f.n}">${f.n}</button>`).join('')}</div></div>
+    <p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+  bindBack();
+  const cards=[...view.querySelectorAll('.mcard')];
+  cards.forEach(b=>b.onclick=()=>{
+    if(matched.has(b.dataset.n))return;
+    if(b.dataset.side==='w')speak(b.dataset.n);
+    if(!sel||sel.dataset.side===b.dataset.side){cards.forEach(x=>x.classList.remove('sel'));sel=b;b.classList.add('sel');sfx.tap();return}
+    const a=sel;sel=null;a.classList.remove('sel');
+    const c=$('#cheer');
+    if(a.dataset.n===b.dataset.n){
+      matched.add(b.dataset.n);[a,b].forEach(x=>{x.classList.add('done');x.disabled=true});sfx.good();
+      c.className='cheer pop';c.textContent=rnd(PRAISE);speak(b.dataset.n);
+      S.steps=matched.size;$('.progress i').style.width=Math.round(S.steps/S.total*100)+'%';
+      if(matched.size===q.foods.length)setTimeout(next,1000);
+    }else{
+      S.miss++;sfx.bad();[a,b].forEach(x=>{x.classList.remove('wrong');void x.offsetWidth;x.classList.add('wrong')});
+      c.className='cheer oops';c.textContent='Try again! Coba lagi!';
+    }
+  });
+}
+
+function finish(){
+  const lim=S.L.k==='E'?[2,5]:[1,3];
+  const st=S.miss<=lim[0]?3:S.miss<=lim[1]?2:1;
+  STARS[S.i]=Math.max(STARS[S.i],st);saveStars();
+  const i=S.i,nextI=(i+1)%LEVELS.length;
+  view.innerHTML=`<section class="plate result">
+    <div class="big-stars">${[0,1,2].map(k=>`<span class="${k<st?'on':''}" style="animation-delay:${k*.18}s">★</span>`).join('')}</div>
+    <h2>${st===3?'Perfect lunch!':st===2?'Nice work!':'Good try!'}</h2>
+    <p>Game ${S.L.k} · ${S.L.t} — ${S.miss===0?'no mistakes':S.miss+' mistake'+(S.miss>1?'s':'')}</p>
+    <div class="actions"><button class="btn ghost" id="again">↺ Play again</button>
+    <button class="btn" id="nxt">Next: ${LEVELS[nextI].t} →</button>
+    <button class="btn red" id="menu">Menu</button></div></section>`;
+  sfx.win();confetti();
+  $('#again').onclick=()=>start(i);$('#nxt').onclick=()=>start(nextI);$('#menu').onclick=renderMap;
+}
+
+/* ---------- confetti ---------- */
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const cv=$('#fx'),cx=cv.getContext('2d');cv.width=innerWidth;cv.height=innerHeight;
+  const E=['🍕','🍇','🍉','🧀','🥨','🍗','⭐'];
+  const P=Array.from({length:46},()=>({x:Math.random()*cv.width,y:-30-Math.random()*cv.height*.5,v:2+Math.random()*3.5,r:Math.random()*6,s:18+Math.random()*16,e:rnd(E),w:Math.random()*.1-.05}));
+  let t=0;(function f(){cx.clearRect(0,0,cv.width,cv.height);
+    P.forEach(p=>{p.y+=p.v;p.r+=p.w;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.font=p.s+'px serif';cx.fillText(p.e,0,0);cx.restore()});
+    if(++t<170)requestAnimationFrame(f);else cx.clearRect(0,0,cv.width,cv.height)})();
+}
+
+$('#home').onclick=renderMap;
+saveStars();renderMap();
+</script>
