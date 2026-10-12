@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Katak Lompat Mundur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@700;800&display=swap">
+<style>
+/* Tema kolam: garis bilangan = batang kayu di kolam, katak melompat mundur sampai 0. */
+:root{
+  --water:#d6f2ec; --water-2:#bfe8df; --deep:#1f8a7d; --ink:#22384a; --muted:#5d7283;
+  --leaf:#4fae5a; --leaf-d:#37813f; --sun:#ffc943; --sun-d:#d9a01c; --berry:#e2546a; --berry-d:#b83a4f;
+  --card:#ffffff; --wood:#b07a45; --wood-d:#8a5a2c;
+  --display:"Baloo 2","Comic Sans MS",system-ui,sans-serif;
+  --body:"Nunito",system-ui,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--water);color:var(--ink);font-family:var(--body);font-size:17px;
+  background-image:radial-gradient(circle at 12% 18%,#ffffff70 0 70px,transparent 71px),radial-gradient(circle at 88% 70%,#ffffff55 0 90px,transparent 91px);
+  padding:14px 14px 70px}
+.wrap{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.hidden{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:4px solid var(--berry);outline-offset:3px}
+
+h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,7vw,46px);line-height:1;margin:0;color:var(--deep);text-shadow:3px 3px 0 var(--sun)}
+.card{background:var(--card);border-radius:24px;padding:18px;box-shadow:0 6px 0 var(--water-2)}
+
+/* menu */
+.hero{display:flex;gap:16px;align-items:center}
+.hero .f{font-size:70px;line-height:1;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.hero p{margin:6px 0 0;color:var(--muted);font-weight:800}
+.howto{background:#fff8e0;border-radius:18px;padding:14px 16px;font-weight:700;line-height:1.55}
+.howto b{color:var(--berry)}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mode{border:0;border-radius:20px;padding:18px 16px;text-align:left;background:var(--card);box-shadow:0 6px 0 var(--water-2);transition:transform .12s}
+.mode:hover{transform:translateY(-3px)}
+.mode .e{font-size:38px}
+.mode b{display:block;font-family:var(--display);font-size:1.35rem;margin-top:4px}
+.mode span{color:var(--muted);font-weight:700;font-size:.92rem}
+.mode.pri{background:var(--leaf);color:#fff;box-shadow:0 6px 0 var(--leaf-d)}
+.mode.pri span{color:#e9f9ea}
+
+/* play */
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{background:var(--card);border-radius:999px;padding:6px 14px;font-weight:800;box-shadow:0 3px 0 var(--water-2);font-variant-numeric:tabular-nums}
+.back{border:0;background:var(--card);border-radius:12px;padding:7px 12px;font-weight:800;box-shadow:0 3px 0 var(--water-2)}
+.grow{flex:1}
+.eq{font-family:var(--display);font-weight:800;font-size:clamp(40px,10vw,60px);text-align:center;line-height:1;font-variant-numeric:tabular-nums}
+.eq .q{color:var(--berry);display:inline-block;min-width:1.1em;border-bottom:5px solid var(--berry)}
+.sub{text-align:center;color:var(--muted);font-weight:800;margin:6px 0 0}
+
+.pond{position:relative;height:150px;margin-top:6px}
+.track{position:absolute;left:3%;right:3%;bottom:42px;height:12px;border-radius:99px;background:var(--wood);box-shadow:0 4px 0 var(--wood-d)}
+.tick{position:absolute;bottom:34px;width:2px;height:8px;background:var(--wood-d);transform:translateX(-50%)}
+.tick.maj{height:12px;bottom:30px;width:3px}
+.lab{position:absolute;bottom:8px;transform:translateX(-50%);font-weight:800;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.land{position:absolute;bottom:4px;transform:translateX(-50%);font-family:var(--display);font-weight:800;font-size:17px;color:#fff;background:var(--berry);border-radius:9px;padding:0 6px;z-index:2;animation:pop .35s}
+.land.start{background:var(--deep)}
+.arc{position:absolute;bottom:58px;height:40px;border:3px dashed var(--berry);border-bottom:0;border-radius:50% 50% 0 0/100% 100% 0 0;animation:fade .4s}
+.arc b{position:absolute;top:-24px;left:50%;transform:translateX(-50%);font-family:var(--display);font-size:15px;color:var(--berry-d);background:#fff;border-radius:8px;padding:0 5px;white-space:nowrap}
+.frog{position:absolute;bottom:52px;transform:translateX(-50%);transition:left .6s ease-in-out;z-index:3;font-size:40px;line-height:1}
+.frog span{display:inline-block}
+.frog.hop span{animation:jump .6s ease-in-out}
+@keyframes jump{50%{transform:translateY(-46px) rotate(-14deg) scale(1.1)}}
+@keyframes pop{0%{transform:translateX(-50%) scale(.4)}70%{transform:translateX(-50%) scale(1.2)}100%{transform:translateX(-50%) scale(1)}}
+@keyframes fade{from{opacity:0}}
+
+.cols{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;align-items:start}
+@media (max-width:620px){.cols{grid-template-columns:1fr}}
+.work{display:flex;flex-direction:column;gap:6px;max-height:300px;overflow:auto;padding:4px}
+.row{font-family:var(--display);font-weight:800;font-size:1.45rem;display:flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums}
+.row.done{color:var(--muted);font-size:1.2rem}
+.row.jadi{margin-top:6px;color:var(--deep)}
+.box{display:inline-grid;place-items:center;min-width:60px;height:46px;border-radius:12px;border:3px solid #dde6ea;background:#f6fafb;padding:0 8px}
+.row.done .box{min-width:44px;height:34px;border-color:var(--leaf);background:#e3f6e5;color:var(--leaf-d)}
+.box.act{border-color:var(--sun);background:#fff8df;color:var(--ink);box-shadow:0 0 0 4px #ffc94355}
+.box.bad{animation:shake .4s;border-color:var(--berry)}
+.box.ok{border-color:var(--leaf);background:#e3f6e5;color:var(--leaf-d)}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.key{border:0;border-radius:14px;padding:12px 0;font-family:var(--display);font-weight:800;font-size:1.6rem;background:#eef4f6;box-shadow:0 4px 0 #d3dee3}
+.key:active{transform:translateY(3px);box-shadow:0 1px 0 #d3dee3}
+.key.ok{background:var(--leaf);color:#fff;box-shadow:0 4px 0 var(--leaf-d)}
+.key.del{background:#fde3e7;color:var(--berry-d);box-shadow:0 4px 0 #f3bcc5}
+.key:disabled{opacity:.4;cursor:default}
+.msg{min-height:2.6em;margin:0;font-weight:800;font-size:1.05rem;text-align:center;display:flex;align-items:center;justify-content:center}
+.msg.good{color:var(--leaf-d)} .msg.bad{color:var(--berry-d)}
+.btn{border:0;border-radius:14px;padding:12px 22px;font-family:var(--display);font-weight:800;font-size:1.15rem;background:var(--leaf);color:#fff;box-shadow:0 4px 0 var(--leaf-d)}
+.btn.alt{background:var(--card);color:var(--ink);box-shadow:0 4px 0 #d3dee3;border:2px solid #d3dee3}
+.btn:active{transform:translateY(3px)}
+.center{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* end */
+.end{text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+.bigstars{font-size:54px;letter-spacing:6px}
+.res{list-style:none;padding:0;margin:0;display:grid;gap:6px;width:100%;max-width:380px}
+.res li{display:flex;justify-content:space-between;background:#f3f9f8;border-radius:12px;padding:8px 14px;font-weight:800;font-variant-numeric:tabular-nums}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:20}
+.confetti i{position:absolute;top:-30px;font-style:normal;font-size:24px;animation:fall 1.8s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(500deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- MENU -->
+  <section id="menu" class="wrap">
+    <div class="card hero">
+      <span class="f">🐸</span>
+      <div><h1>Katak Lompat Mundur</h1><p>Pembagian sebagai pengurangan berulang</p></div>
+    </div>
+    <div class="howto">
+      Katak mulai dari angka yang dibagi, lalu melompat mundur sama jauh sampai tiba di <b>0</b>.<br>
+      Isi hasil setiap pengurangan. <b>Banyaknya lompatan = hasil bagi.</b><br>
+      Contoh: 20 − 4 = 16, 16 − 4 = 12, 12 − 4 = 8, 8 − 4 = 4, 4 − 4 = 0 → 5 lompatan, jadi <b>20 : 4 = 5</b>.
+    </div>
+    <div class="modes">
+      <button class="mode" id="mDemo"><span class="e">👀</span><b>Lihat Contoh</b><span>Katak menunjukkan cara mengerjakan 20 : 4</span></button>
+      <button class="mode pri" id="mPR"><span class="e">📝</span><b>Kerjakan PR</b><span>5 soal persis seperti di lembar PR</span></button>
+      <button class="mode" id="mAcak"><span class="e">🎲</span><b>Soal Acak</b><span>8 soal baru setiap main, hasil maksimal 60</span></button>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <section id="play" class="wrap hidden">
+    <div class="top">
+      <button class="back" id="toMenu">← Kembali</button>
+      <span class="pill" id="qnum">Soal 1 dari 5</span>
+      <span class="grow"></span>
+      <span class="pill">⭐ <span id="stars">0</span></span>
+    </div>
+    <div class="card">
+      <div class="eq"><span id="eqA">24</span> : <span id="eqB">4</span> = <span class="q" id="eqQ">?</span></div>
+      <p class="sub" id="sub">Kurangi terus sampai habis!</p>
+      <div class="pond" id="pond"></div>
+    </div>
+    <div class="cols">
+      <div class="card"><div class="work" id="work"></div></div>
+      <div class="card">
+        <p class="msg" id="msg"></p>
+        <div class="pad" id="pad"></div>
+        <div class="center hidden" id="nextWrap" style="margin-top:10px"><button class="btn" id="nextBtn">Soal berikutnya ▶</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AKHIR -->
+  <section id="end" class="card end hidden">
+    <div class="bigstars" id="endStars"></div>
+    <h1 id="endTitle">Hebat!</h1>
+    <p class="sub" id="endSub"></p>
+    <ul class="res" id="resList"></ul>
+    <div class="center">
+      <button class="btn" id="again">Main lagi 🔄</button>
+      <button class="btn alt" id="endMenu">Menu</button>
+    </div>
+  </section>
+
+</div>
+<div class="confetti" id="confetti"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const PRAISE=["Hebat! 🎉","Betul! 👏","Mantap! 💪","Pintar! 🌟","Lompat lagi! 🐸"];
+const PR=[[24,4],[30,5],[16,4],[36,6],[21,7]];
+
+/* ---------- suara ---------- */
+let ac;
+function tone(f,d=.14,type="triangle",when=0,vol=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+when;o.type=type;o.frequency.value=f;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+d)}catch(e){}}
+const sGood=()=>{tone(660);tone(880,.18,"triangle",.1)};
+const sBad=()=>tone(190,.25,"square",0,.07);
+const sHop=()=>{tone(300,.12,"sine");tone(520,.14,"sine",.12)};
+const sWin=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12));
+
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const box=$("confetti"),E=["🐸","⭐","🍃","💧","🎉"];
+  for(let i=0;i<34;i++){const c=document.createElement("i");c.textContent=pick(E);c.style.left=Math.random()*100+"%";c.style.animationDelay=Math.random()*.6+"s";box.appendChild(c)}
+  setTimeout(()=>box.innerHTML="",2600);
+}
+
+/* ---------- keypad ---------- */
+const KEYS=["1","2","3","4","5","6","7","8","9","⌫","0","OK"];
+$("pad").innerHTML=KEYS.map(k=>`<button class="key ${k==="OK"?"ok":k==="⌫"?"del":""}" data-k="${k}">${k==="OK"?"OK ✓":k}</button>`).join("");
+$("pad").addEventListener("click",e=>{const b=e.target.closest(".key");if(b)press(b.dataset.k)});
+document.addEventListener("keydown",e=>{
+  if($("play").classList.contains("hidden")||mode==="demo")return;
+  if(/^[0-9]$/.test(e.key))press(e.key);
+  else if(e.key==="Backspace")press("⌫");
+  else if(e.key==="Enter")press("OK");
+});
+
+/* ---------- status permainan ---------- */
+let mode="pr",set=[],qi=0,q=null,totalStars=0,results=[],busy=false,run=0;
+
+function show(id){["menu","play","end"].forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo({top:0})}
+function say(t,cls=""){const m=$("msg");m.className="msg "+cls;m.textContent=t}
+
+function makeRandom(){
+  const out=[],seen=new Set();
+  while(out.length<8){
+    const b=rnd(2,9),k=rnd(2,Math.min(8,Math.floor(60/b))),a=b*k;
+    if(seen.has(a+"/"+b))continue;seen.add(a+"/"+b);out.push([a,b]);
+  }
+  return out;
+}
+function startSet(m){
+  run++;mode=m;
+  set=m==="pr"?PR.slice():m==="acak"?makeRandom():[[20,4]];
+  qi=0;totalStars=0;results=[];$("stars").textContent=0;
+  $("pad").classList.toggle("hidden",m==="demo");
+  show("play");loadQ();
+  if(m==="demo")setTimeout(autoStep.bind(null,run),1200);
+}
+function loadQ(){
+  const [a,b]=set[qi];
+  q={a,b,cur:a,steps:[],phase:"step",typed:"",miss:0,wrong:0};busy=false;
+  $("qnum").textContent=mode==="demo"?"Contoh":`Soal ${qi+1} dari ${set.length}`;
+  $("eqA").textContent=a;$("eqB").textContent=b;$("eqQ").textContent="?";
+  $("sub").textContent=`Mulai dari ${a}, kurangi ${b} terus sampai 0.`;
+  $("nextWrap").classList.add("hidden");setPad(true);
+  buildLine();renderWork();
+  say(mode==="demo"?"Perhatikan katak melompat ya! 👀":`Berapa ${a} − ${b}?`);
+}
+
+/* ---------- garis bilangan ---------- */
+const pos=v=>3+v/q.a*94;
+function buildLine(){
+  const a=q.a,all=a<=20;let h='<div class="track"></div>';
+  for(let v=0;v<=a;v++){
+    const maj=all||v%5===0||v===a;
+    h+=`<span class="tick ${maj?"maj":""}" style="left:${pos(v)}%"></span>`;
+    if(maj)h+=`<span class="lab" data-v="${v}" style="left:${pos(v)}%">${v}</span>`;
+  }
+  h+=`<span class="land start" style="left:${pos(a)}%">${a}</span>`;
+  h+=`<div class="frog" id="frog" style="left:${pos(a)}%"><span>🐸</span></div>`;
+  $("pond").innerHTML=h;
+}
+function hop(from,to,cb){
+  const pond=$("pond"),f=$("frog");
+  pond.insertAdjacentHTML("beforeend",`<div class="arc" style="left:${pos(to)}%;width:${pos(from)-pos(to)}%"><b>−${q.b}</b></div>`);
+  sHop();f.classList.remove("hop");void f.offsetWidth;f.classList.add("hop");f.style.left=pos(to)+"%";
+  setTimeout(()=>{const gap=q.a>20?2:0;pond.querySelectorAll(".lab").forEach(l=>{if(Math.abs(+l.dataset.v-to)<=gap)l.style.visibility="hidden"});pond.insertAdjacentHTML("beforeend",`<span class="land" style="left:${pos(to)}%">${to}</span>`);cb&&cb()},620);
+}
+
+/* ---------- lembar kerja ---------- */
+function renderWork(bad=false){
+  let h="",prev=q.a;
+  q.steps.forEach(v=>{h+=`<div class="row done">${prev} − ${q.b} = <span class="box">${v}</span></div>`;prev=v});
+  const t=q.typed||"&nbsp;",cls=`box act${bad?" bad":""}`;
+  if(q.phase==="step")h+=`<div class="row">${q.cur} − ${q.b} = <span class="${cls}">${t}</span></div>`;
+  if(q.phase==="final")h+=`<div class="row jadi">Jadi ${q.a} : ${q.b} = <span class="${cls}">${t}</span></div>`;
+  if(q.phase==="done")h+=`<div class="row jadi">Jadi ${q.a} : ${q.b} = <span class="box ok">${q.steps.length}</span></div>`;
+  const w=$("work");w.innerHTML=h;w.scrollTop=w.scrollHeight;
+}
+function setPad(on){$("pad").querySelectorAll(".key").forEach(k=>k.disabled=!on)}
+
+function press(k){
+  if(busy||!q||q.phase==="done")return;
+  if(k==="⌫")q.typed=q.typed.slice(0,-1);
+  else if(k==="OK"){if(q.typed!=="")submit();return}
+  else if(q.typed.length<2)q.typed+=k;
+  renderWork();
+}
+
+function submit(){
+  const val=+q.typed;
+  if(q.phase==="step"){
+    const exp=q.cur-q.b;
+    if(val===exp){
+      const from=q.cur;q.steps.push(exp);q.cur=exp;q.typed="";q.wrong=0;busy=true;
+      if(exp===0){q.phase="final"}
+      renderWork();sGood();
+      hop(from,exp,()=>{
+        busy=false;
+        if(q.cur===0)say(`Sampai di 0! 🎉 Ada berapa lompatan? Itulah hasil ${q.a} : ${q.b}.`,"good");
+        else say(mode==="demo"?`${from} − ${q.b} = ${exp}`:`${pick(PRAISE)} Sekarang ${q.cur} − ${q.b} = ?`,"good");
+      });
+    }else wrongAns(exp,`Belum tepat. Hitung mundur ${q.b} langkah dari ${q.cur} di garis bilangan 👆`);
+  }else if(q.phase==="final"){
+    const exp=q.steps.length;
+    if(val===exp)finishQ();
+    else wrongAns(exp,`Hitung lengkungan lompatan katak. Ada berapa? 🐸`);
+  }
+}
+function wrongAns(exp,hint){
+  q.miss++;q.wrong++;q.typed="";sBad();renderWork(true);
+  if(q.wrong>=3){
+    busy=true;say(`Jawabannya ${exp}. Ayo lanjut! 💪`,"bad");
+    setTimeout(()=>{busy=false;q.typed=String(exp);renderWork();submit()},1300);
+  }else say(hint,"bad");
+}
+function finishQ(){
+  q.phase="done";renderWork();setPad(false);
+  const n=q.steps.length;$("eqQ").textContent=n;
+  const st=q.miss===0?3:q.miss<=2?2:1;
+  sWin();confetti();
+  if(mode==="demo"){
+    say(`Katak melompat ${n} kali, jadi ${q.a} : ${q.b} = ${n}. Sekarang giliranmu!`,"good");
+    $("nextBtn").textContent="Ayo kerjakan PR ▶";$("nextWrap").classList.remove("hidden");return;
+  }
+  totalStars+=st;$("stars").textContent=totalStars;results.push({a:q.a,b:q.b,n,st});
+  say(`Betul! ${q.a} : ${q.b} = ${n}, karena ${n} × ${q.b} = ${q.a}. ${"⭐".repeat(st)}`,"good");
+  $("nextBtn").textContent=qi+1<set.length?"Soal berikutnya ▶":"Lihat hasil 🏆";
+  $("nextWrap").classList.remove("hidden");
+}
+$("nextBtn").onclick=()=>{
+  if(mode==="demo")return startSet("pr");
+  qi++;if(qi<set.length)loadQ();else showEnd();
+};
+
+/* ---------- contoh otomatis ---------- */
+function autoStep(token){
+  if(token!==run||!q||mode!=="demo")return;
+  if(busy)return setTimeout(()=>autoStep(token),300);
+  if(q.phase==="step"){q.typed=String(q.cur-q.b);renderWork();setTimeout(()=>{if(token!==run)return;submit();setTimeout(()=>autoStep(token),1500)},700)}
+  else if(q.phase==="final"){say("Sampai di 0! Hitung lompatannya: 1, 2, 3, 4, 5 🐸","good");setTimeout(()=>{if(token!==run)return;q.typed=String(q.steps.length);renderWork();setTimeout(()=>token===run&&submit(),900)},1600)}
+}
+
+/* ---------- akhir ---------- */
+function showEnd(){
+  show("end");
+  const max=set.length*3,pct=totalStars/max,s=pct>=.9?3:pct>=.6?2:1;
+  $("endStars").textContent="⭐".repeat(s)+"☆".repeat(3-s);
+  $("endTitle").textContent=s===3?"Juara Lompat! 🏆":s===2?"Bagus Sekali! 👍":"Ayo Coba Lagi! 💪";
+  $("endSub").textContent=`Kamu mengumpulkan ${totalStars} dari ${max} bintang.`;
+  $("resList").innerHTML=results.map(r=>`<li><span>${r.a} : ${r.b} = ${r.n}</span><span>${"⭐".repeat(r.st)}</span></li>`).join("");
+  if(s>=2){sWin();confetti()}
+}
+
+$("mDemo").onclick=()=>startSet("demo");
+$("mPR").onclick=()=>startSet("pr");
+$("mAcak").onclick=()=>startSet("acak");
+$("toMenu").onclick=()=>{run++;show("menu")};
+$("endMenu").onclick=()=>show("menu");
+$("again").onclick=()=>startSet(mode);
+</script>
+<a href="index.html" style="position:fixed;left:12px;bottom:12px;z-index:50;background:#fff;color:#2b2d42;text-decoration:none;font:700 15px system-ui,sans-serif;padding:8px 14px;border-radius:999px;box-shadow:0 3px 10px rgba(0,0,0,.2)">🏠 Semua Game</a>
+</body>
+</html>
