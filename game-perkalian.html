@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jagoan Perkalian</title>
+<style>
+  :root{
+    --bg1:#ffd36e; --bg2:#ff8fab; --card:#ffffff; --ink:#2b2d42;
+    --pri:#6c5ce7; --ok:#2ecc71; --bad:#ff4d6d; --muted:#8d99ae;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{
+    font-family:"Segoe UI",Nunito,Arial,sans-serif;color:var(--ink);
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2));padding:16px;
+  }
+  .card{
+    background:var(--card);width:100%;max-width:480px;border-radius:28px;
+    padding:28px 24px;box-shadow:0 18px 40px rgba(0,0,0,.18);text-align:center;position:relative;overflow:hidden;
+  }
+  h1{font-size:2rem;color:var(--pri);margin-bottom:6px}
+  .sub{color:var(--muted);margin-bottom:22px}
+  .hidden{display:none!important}
+  .label{font-weight:700;margin:14px 0 8px;text-align:left}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .opt{
+    border:3px solid #e6e6f0;background:#fafaff;border-radius:16px;padding:12px;
+    font-size:1rem;font-weight:700;cursor:pointer;color:var(--ink);transition:.15s;
+  }
+  .opt small{display:block;font-weight:500;color:var(--muted);font-size:.78rem;margin-top:2px}
+  .opt.sel{border-color:var(--pri);background:#efeaff}
+  .btn{
+    margin-top:22px;width:100%;border:none;border-radius:18px;padding:16px;
+    font-size:1.25rem;font-weight:800;color:#fff;background:var(--pri);cursor:pointer;
+    box-shadow:0 6px 0 #4b3bc4;transition:transform .1s;
+  }
+  .btn:active{transform:translateY(4px);box-shadow:0 2px 0 #4b3bc4}
+  .btn.sec{background:#fff;color:var(--pri);border:3px solid var(--pri);box-shadow:none}
+
+  .hud{display:flex;justify-content:space-between;gap:8px;margin-bottom:14px;font-weight:700}
+  .pill{background:#f1f2f6;border-radius:999px;padding:8px 12px;font-size:.95rem;flex:1}
+  .bar{height:10px;background:#eee;border-radius:99px;overflow:hidden;margin-bottom:18px}
+  .bar>div{height:100%;background:linear-gradient(90deg,#55efc4,var(--pri));width:100%;transition:width .25s linear}
+  .q{font-size:3.6rem;font-weight:900;margin:12px 0 18px;letter-spacing:2px}
+  .q .x{color:var(--bad)}
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .choice{
+    font-size:2rem;font-weight:800;padding:18px 0;border-radius:18px;border:none;cursor:pointer;color:#fff;
+    box-shadow:0 5px 0 rgba(0,0,0,.18);transition:transform .1s;
+  }
+  .choice:active{transform:translateY(3px)}
+  .c0{background:#0984e3}.c1{background:#00b894}.c2{background:#e17055}.c3{background:#a55eea}
+  .choice.right{background:var(--ok)!important;animation:pop .3s}
+  .choice.wrong{background:var(--bad)!important;animation:shake .35s}
+  .answerBox{
+    font-size:2.4rem;font-weight:900;border:4px solid #e6e6f0;border-radius:18px;padding:10px;
+    min-height:68px;margin-bottom:12px;background:#fafaff;
+  }
+  .answerBox.right{border-color:var(--ok);color:var(--ok)}
+  .answerBox.wrong{border-color:var(--bad);color:var(--bad);animation:shake .35s}
+  .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .key{
+    font-size:1.6rem;font-weight:800;padding:12px 0;border-radius:14px;border:none;background:#f1f2f6;
+    cursor:pointer;color:var(--ink);box-shadow:0 4px 0 #d5d8e0;
+  }
+  .key:active{transform:translateY(3px);box-shadow:0 1px 0 #d5d8e0}
+  .key.go{background:var(--ok);color:#fff;box-shadow:0 4px 0 #239a55}
+  .key.del{background:#ffe0e6;color:var(--bad);box-shadow:0 4px 0 #f5b5c2}
+  .msg{height:30px;font-weight:800;font-size:1.2rem;margin-top:12px}
+  .msg.ok{color:var(--ok)} .msg.bad{color:var(--bad)}
+
+  .stars{font-size:3rem;margin:8px 0}
+  .big{font-size:3rem;font-weight:900;color:var(--pri)}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+  .stat{background:#f1f2f6;border-radius:14px;padding:10px 4px}
+  .stat b{display:block;font-size:1.4rem}
+  .stat span{font-size:.8rem;color:var(--muted)}
+  .review{text-align:left;max-height:170px;overflow:auto;background:#fff5f7;border-radius:14px;padding:10px 14px;font-size:1rem}
+  .review li{margin:4px 0 4px 18px}
+  .best{color:var(--muted);font-size:.9rem;margin-top:6px}
+
+  .confetti{position:absolute;width:10px;height:14px;top:-20px;animation:fall 1.6s linear forwards;pointer-events:none}
+  @keyframes fall{to{transform:translateY(620px) rotate(540deg);opacity:.2}}
+  @keyframes pop{50%{transform:scale(1.1)}}
+  @keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- MENU -->
+  <section id="menu">
+    <h1>✖️ Jagoan Perkalian</h1>
+    <p class="sub">Semua hasil perkalian maksimal <b>60</b></p>
+
+    <div class="label">Cara menjawab</div>
+    <div class="opts" data-group="mode">
+      <button class="opt sel" data-val="pilih">🔘 Pilihan Ganda<small>pilih 1 dari 4</small></button>
+      <button class="opt" data-val="ketik">⌨️ Ketik Jawaban<small>lebih menantang</small></button>
+    </div>
+
+    <div class="label">Jenis permainan</div>
+    <div class="opts" data-group="game">
+      <button class="opt sel" data-val="soal">📝 10 Soal<small>santai, ada waktu per soal</small></button>
+      <button class="opt" data-val="waktu">⏱️ Lawan Waktu<small>sebanyak mungkin dalam 60 detik</small></button>
+    </div>
+
+    <div class="label">Tingkat kesulitan</div>
+    <div class="opts" data-group="level" style="grid-template-columns:1fr 1fr 1fr">
+      <button class="opt sel" data-val="1">🐣 Mudah<small>pengali 1–5</small></button>
+      <button class="opt" data-val="2">🐥 Sedang<small>pengali 1–10</small></button>
+      <button class="opt" data-val="3">🦅 Sulit<small>hasil 20–60</small></button>
+    </div>
+
+    <button class="btn" id="startBtn">Mulai Main ▶</button>
+  </section>
+
+  <!-- GAME -->
+  <section id="game" class="hidden">
+    <div class="hud">
+      <div class="pill" id="hudLeft">Soal 1/10</div>
+      <div class="pill">⭐ <span id="score">0</span></div>
+      <div class="pill">🔥 <span id="streak">0</span></div>
+    </div>
+    <div class="bar"><div id="timebar"></div></div>
+    <div class="q" id="question">3 <span class="x">×</span> 4</div>
+
+    <div id="choiceArea" class="choices"></div>
+
+    <div id="typeArea" class="hidden">
+      <div class="answerBox" id="answerBox">&nbsp;</div>
+      <div class="pad" id="pad"></div>
+    </div>
+
+    <div class="msg" id="msg"></div>
+  </section>
+
+  <!-- HASIL -->
+  <section id="result" class="hidden">
+    <h1 id="resTitle">Hebat!</h1>
+    <div class="stars" id="stars">⭐⭐⭐</div>
+    <div class="big" id="finalScore">0</div>
+    <div class="sub" style="margin-bottom:0">poin</div>
+    <div class="stats">
+      <div class="stat"><b id="sBenar">0</b><span>Benar</span></div>
+      <div class="stat"><b id="sSalah">0</b><span>Salah</span></div>
+      <div class="stat"><b id="sStreak">0</b><span>Beruntun</span></div>
+    </div>
+    <div id="reviewWrap">
+      <div class="label">Yuk ingat lagi:</div>
+      <ul class="review" id="review"></ul>
+    </div>
+    <div class="best" id="best"></div>
+    <button class="btn" id="againBtn">Main Lagi 🔄</button>
+    <button class="btn sec" id="menuBtn">Kembali ke Menu</button>
+  </section>
+
+</div>
+
+<script>
+const MAX = 60;
+const settings = { mode:"pilih", game:"soal", level:"1" };
+let st = {};
+let timerId = null, locked = false;
+
+const $ = id => document.getElementById(id);
+const rand = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+
+/* ---------- pilihan menu ---------- */
+document.querySelectorAll(".opts").forEach(g=>{
+  g.addEventListener("click",e=>{
+    const b = e.target.closest(".opt"); if(!b) return;
+    g.querySelectorAll(".opt").forEach(o=>o.classList.remove("sel"));
+    b.classList.add("sel");
+    settings[g.dataset.group] = b.dataset.val;
+  });
+});
+
+/* ---------- daftar soal (hasil ≤ 60) ---------- */
+function buildPool(level){
+  const pool = [];
+  for(let a=1;a<=12;a++) for(let b=1;b<=12;b++){
+    const p = a*b;
+    if(p>MAX) continue;
+    if(level==="1" && (a>5 || b>5)) continue;
+    if(level==="2" && (a>10 || b>10)) continue;
+    if(level==="3" && (p<20 || a===1 || b===1)) continue;
+    pool.push([a,b]);
+  }
+  return pool;
+}
+
+/* ---------- mulai ---------- */
+function start(){
+  st = {
+    pool: buildPool(settings.level), score:0, streak:0, bestStreak:0,
+    benar:0, salah:0, n:0, total: settings.game==="soal" ? 10 : Infinity,
+    wrongList:[], last:null, timeLeft:60
+  };
+  show("game");
+  $("choiceArea").classList.toggle("hidden", settings.mode!=="pilih");
+  $("typeArea").classList.toggle("hidden", settings.mode!=="ketik");
+  if(settings.game==="waktu"){ startGlobalTimer(); }
+  next();
+}
+
+function show(id){
+  ["menu","game","result"].forEach(s=>$(s).classList.toggle("hidden",s!==id));
+}
+
+/* ---------- soal berikut ---------- */
+function next(){
+  if(st.n >= st.total) return finish();
+  locked = false;
+  st.n++;
+  let pair;
+  do { pair = st.pool[rand(0,st.pool.length-1)]; }
+  while(st.pool.length>1 && st.last && pair[0]===st.last[0] && pair[1]===st.last[1]);
+  st.last = pair;
+  st.a = pair[0]; st.b = pair[1]; st.ans = st.a*st.b;
+
+  $("question").innerHTML = `${st.a} <span class="x">×</span> ${st.b}`;
+  $("msg").textContent = ""; $("msg").className="msg";
+  $("hudLeft").textContent = settings.game==="soal" ? `Soal ${st.n}/10` : `⏱️ ${st.timeLeft} dtk`;
+
+  if(settings.mode==="pilih") renderChoices();
+  else { st.typed=""; renderTyped(); }
+
+  if(settings.game==="soal") startQuestionTimer();
+}
+
+function renderChoices(){
+  const set = new Set([st.ans]);
+  const cands = [st.ans+st.a, st.ans-st.a, st.ans+st.b, st.ans-st.b, st.ans+1, st.ans-1, st.ans+2, st.ans+10, st.ans-10];
+  cands.sort(()=>Math.random()-.5);
+  for(const c of cands){ if(set.size>=4) break; if(c>0 && c<=MAX) set.add(c); }
+  while(set.size<4){ set.add(rand(1,MAX)); }
+  const arr = [...set].sort(()=>Math.random()-.5);
+  $("choiceArea").innerHTML = arr.map((v,i)=>`<button class="choice c${i}" data-v="${v}">${v}</button>`).join("");
+}
+$("choiceArea").addEventListener("click",e=>{
+  const b = e.target.closest(".choice"); if(!b || locked) return;
+  const v = +b.dataset.v;
+  if(v===st.ans){ b.classList.add("right"); answer(true); }
+  else{
+    b.classList.add("wrong");
+    $("choiceArea").querySelector(`[data-v="${st.ans}"]`).classList.add("right");
+    answer(false);
+  }
+});
+
+/* ---------- keypad ---------- */
+const keys = ["1","2","3","4","5","6","7","8","9","⌫","0","✔"];
+$("pad").innerHTML = keys.map(k=>`<button class="key ${k==="✔"?"go":k==="⌫"?"del":""}" data-k="${k}">${k}</button>`).join("");
+$("pad").addEventListener("click",e=>{ const b=e.target.closest(".key"); if(b) press(b.dataset.k); });
+document.addEventListener("keydown",e=>{
+  if($("game").classList.contains("hidden") || settings.mode!=="ketik") return;
+  if(/^[0-9]$/.test(e.key)) press(e.key);
+  else if(e.key==="Backspace") press("⌫");
+  else if(e.key==="Enter") press("✔");
+});
+function press(k){
+  if(locked) return;
+  if(k==="⌫") st.typed = st.typed.slice(0,-1);
+  else if(k==="✔"){ if(st.typed==="") return; checkTyped(); return; }
+  else if(st.typed.length<2) st.typed += k;
+  renderTyped();
+}
+function renderTyped(cls=""){
+  const box=$("answerBox");
+  box.className = "answerBox "+cls;
+  box.innerHTML = st.typed || "&nbsp;";
+}
+function checkTyped(){
+  const ok = +st.typed===st.ans;
+  renderTyped(ok?"right":"wrong");
+  answer(ok);
+}
+
+/* ---------- penilaian ---------- */
+const pujian = ["Hebat! 🎉","Pintar! 🌟","Mantap! 💪","Keren! 😎","Betul! 👏","Luar biasa! 🚀"];
+function answer(ok){
+  locked = true;
+  clearInterval(timerId && settings.game==="soal" ? timerId : null);
+  if(ok){
+    st.benar++; st.streak++; st.bestStreak=Math.max(st.bestStreak,st.streak);
+    const bonus = Math.min(st.streak-1,5);
+    st.score += 10 + bonus*2;
+    $("msg").textContent = pujian[rand(0,pujian.length-1)] + (st.streak>=3?` ${st.streak}× beruntun!`:"");
+    $("msg").className="msg ok";
+    if(st.streak%5===0) confetti();
+  }else{
+    st.salah++; st.streak=0;
+    st.wrongList.push(`${st.a} × ${st.b} = ${st.ans}`);
+    $("msg").textContent = `Jawabannya ${st.ans} 🙂`;
+    $("msg").className="msg bad";
+  }
+  $("score").textContent=st.score; $("streak").textContent=st.streak;
+  setTimeout(next, ok?650:1300);
+}
+
+/* ---------- timer ---------- */
+function startQuestionTimer(){
+  clearInterval(timerId);
+  const dur = settings.level==="3" ? 8 : 10;
+  let t = dur*10;
+  $("timebar").style.width="100%";
+  timerId = setInterval(()=>{
+    if(locked) return;
+    t--; $("timebar").style.width = (t/(dur*10)*100)+"%";
+    if(t<=0){
+      clearInterval(timerId);
+      if(settings.mode==="pilih") $("choiceArea").querySelector(`[data-v="${st.ans}"]`)?.classList.add("right");
+      else { st.typed=String(st.ans); renderTyped("right"); }
+      answer(false);
+      $("msg").textContent = `Waktu habis! Jawabannya ${st.ans} ⏰`;
+    }
+  },100);
+}
+function startGlobalTimer(){
+  clearInterval(timerId);
+  st.timeLeft = 60;
+  $("timebar").style.width="100%";
+  timerId = setInterval(()=>{
+    st.timeLeft--;
+    $("timebar").style.width = (st.timeLeft/60*100)+"%";
+    $("hudLeft").textContent = `⏱️ ${st.timeLeft} dtk`;
+    if(st.timeLeft<=0){ clearInterval(timerId); finish(); }
+  },1000);
+}
+
+/* ---------- selesai ---------- */
+function finish(){
+  clearInterval(timerId);
+  st.total = 0; // hentikan soal berikutnya
+  show("result");
+  const tot = st.benar+st.salah;
+  const pct = tot ? st.benar/tot : 0;
+  const stars = pct>=.9 ? 3 : pct>=.6 ? 2 : pct>0 ? 1 : 0;
+  $("stars").textContent = "⭐".repeat(stars) + "☆".repeat(3-stars);
+  $("resTitle").textContent = stars===3?"Juara Perkalian! 🏆":stars===2?"Bagus Sekali! 👍":"Ayo Coba Lagi! 💪";
+  $("finalScore").textContent = st.score;
+  $("sBenar").textContent=st.benar; $("sSalah").textContent=st.salah; $("sStreak").textContent=st.bestStreak;
+
+  const uniq=[...new Set(st.wrongList)];
+  $("reviewWrap").classList.toggle("hidden",!uniq.length);
+  $("review").innerHTML = uniq.map(w=>`<li>${w}</li>`).join("");
+
+  const key = `best_${settings.game}_${settings.mode}_${settings.level}`;
+  let best = 0;
+  try{ best = +localStorage.getItem(key)||0; if(st.score>best){ localStorage.setItem(key,st.score); } }catch(e){}
+  $("best").textContent = st.score>best && st.score>0 ? "🎊 Rekor baru!" : best ? `Rekor terbaik: ${best} poin` : "";
+  if(stars===3) confetti();
+}
+
+function confetti(){
+  const card=document.querySelector(".card");
+  const colors=["#ff4d6d","#ffd36e","#6c5ce7","#00b894","#0984e3"];
+  for(let i=0;i<40;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=rand(0,100)+"%";
+    c.style.background=colors[rand(0,4)];
+    c.style.animationDelay=(Math.random()*.5)+"s";
+    card.appendChild(c);
+    setTimeout(()=>c.remove(),2300);
+  }
+}
+
+$("startBtn").onclick = start;
+$("againBtn").onclick = start;
+$("menuBtn").onclick = ()=>{ clearInterval(timerId); show("menu"); };
+</script>
+</body>
+</html>
