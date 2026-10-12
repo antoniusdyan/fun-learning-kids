@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hard C vs Soft C</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fff8ec; --ink:#2b2d42; --hard:#ef6c3a; --hard-soft:#ffe1d3;
+    --soft:#3a8ef6; --soft-soft:#dbe9ff; --ok:#2bb673; --bad:#e63946; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Fredoka',system-ui,sans-serif;background:var(--bg);color:var(--ink);
+       min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px}
+  h1{margin:8px 0 4px;font-size:clamp(1.6rem,4vw,2.4rem);text-align:center}
+  h1 .h{color:var(--hard)} h1 .s{color:var(--soft)}
+  .sub{margin:0 0 12px;text-align:center;opacity:.8;max-width:640px}
+  .bar{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+  .pill{background:var(--card);border-radius:999px;padding:6px 16px;font-weight:600;box-shadow:0 2px 0 rgba(0,0,0,.08)}
+  button{font-family:inherit;font-weight:600;font-size:1rem;border:none;border-radius:12px;
+         padding:8px 16px;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+  button:active{transform:translateY(2px);box-shadow:none}
+  .btn-main{background:var(--ink);color:#fff}
+  .btn-ghost{background:#fff;color:var(--ink)}
+  #pool{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;min-height:70px;
+        width:100%;max-width:860px;padding:12px;border:3px dashed #d9cdb8;border-radius:18px;margin-bottom:16px}
+  .word{background:var(--card);padding:10px 18px;border-radius:14px;font-size:1.3rem;font-weight:600;
+        cursor:grab;user-select:none;box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .15s}
+  .word:hover{transform:translateY(-2px)}
+  .word.selected{outline:4px solid #ffb703;transform:scale(1.08)}
+  .word .c{text-decoration:underline;text-decoration-thickness:3px}
+  .word.correct{background:#d8f5e6;cursor:default}
+  .word.wrong{animation:shake .4s}
+  @keyframes shake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+  .baskets{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:860px}
+  .basket{border-radius:20px;padding:12px;min-height:220px;display:flex;flex-direction:column;
+          border:4px solid transparent;transition:border-color .2s, transform .2s}
+  .basket.hard{background:var(--hard-soft)} .basket.soft{background:var(--soft-soft)}
+  .basket.over{transform:scale(1.02)}
+  .basket.hard.over,.basket.hard.target{border-color:var(--hard)}
+  .basket.soft.over,.basket.soft.target{border-color:var(--soft)}
+  .basket h2{margin:0;font-size:1.4rem;text-align:center}
+  .basket.hard h2{color:var(--hard)} .basket.soft h2{color:var(--soft)}
+  .basket .hint{text-align:center;font-size:.9rem;opacity:.75;margin:2px 0 10px}
+  .basket .items{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .basket .items .word{font-size:1.05rem;padding:6px 12px}
+  #toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-120px);
+         padding:10px 22px;border-radius:14px;color:#fff;font-weight:600;font-size:1.1rem;
+         transition:transform .25s;z-index:10}
+  #toast.show{transform:translateX(-50%) translateY(0)}
+  .rule{max-width:860px;width:100%;background:#fff;border-radius:16px;padding:12px 16px;margin-top:16px;
+        box-shadow:0 2px 0 rgba(0,0,0,.06);display:none}
+  .rule.open{display:block}
+  .rule b.h{color:var(--hard)} .rule b.s{color:var(--soft)}
+  #win{position:fixed;inset:0;background:rgba(43,45,66,.6);display:none;align-items:center;justify-content:center;z-index:20;padding:16px}
+  #win.show{display:flex}
+  #win .box{background:#fff;border-radius:24px;padding:24px 28px;text-align:center;max-width:380px;width:100%}
+  #win .stars{font-size:2.6rem;margin:6px 0}
+  @media (max-width:560px){ .baskets{grid-template-columns:1fr} .word{font-size:1.15rem} }
+</style>
+</head>
+<body>
+
+<h1><span class="h">Hard C</span> vs <span class="s">Soft C</span></h1>
+<p class="sub">Seret setiap kata ke keranjang yang tepat — atau ketuk kata, lalu ketuk keranjangnya.
+Ketuk dua kali pada kata untuk mendengar pengucapannya 🔊</p>
+
+<div class="bar">
+  <span class="pill">⭐ Skor: <span id="score">0</span></span>
+  <span class="pill">❌ Salah: <span id="miss">0</span></span>
+  <span class="pill">📦 Sisa: <span id="left">0</span></span>
+  <button class="btn-ghost" id="ruleBtn">💡 Aturan</button>
+  <button class="btn-main" id="newBtn">🔄 Main Lagi</button>
+</div>
+
+<div id="pool"></div>
+
+<div class="baskets">
+  <div class="basket hard" data-type="hard">
+    <h2>🧊 Hard C</h2>
+    <div class="hint">bunyi /k/ seperti <i>cat</i></div>
+    <div class="items"></div>
+  </div>
+  <div class="basket soft" data-type="soft">
+    <h2>🎬 Soft C</h2>
+    <div class="hint">bunyi /s/ seperti <i>city</i></div>
+    <div class="items"></div>
+  </div>
+</div>
+
+<div class="rule" id="rule">
+  <b>Aturan mudah:</b><br>
+  Jika huruf <b>C</b> diikuti <b class="s">e, i, atau y</b> → biasanya <b class="s">Soft C</b> (bunyi /s/): <i>cent, city, cycle, juice</i>.<br>
+  Jika huruf <b>C</b> diikuti <b class="h">a, o, u</b> atau huruf mati → biasanya <b class="h">Hard C</b> (bunyi /k/): <i>cave, cold, cut, crab</i>.
+</div>
+
+<div id="toast"></div>
+
+<div id="win">
+  <div class="box">
+    <h2 style="margin:0">🎉 Selesai!</h2>
+    <div class="stars" id="stars"></div>
+    <p id="winText"></p>
+    <button class="btn-main" id="againBtn">Main Lagi</button>
+  </div>
+</div>
+
+<script>
+const HARD = ["cold","cave","case","cut","cat","cup","cake","coat","cow","cub","cook","cloud","clap","crab","cap","candy","corn","camel","cube","cookie","picnic","music","doctor","bacon"];
+const SOFT = ["juice","cinema","city","circle","cent","cell","cycle","ice","face","rice","dance","mice","pencil","fence","cereal","circus","place","race","price","cycling","bicycle","celery","nice","space"];
+const PER_TYPE = 7;
+
+let score=0, miss=0, left=0, selected=null;
+const pool=document.getElementById('pool');
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+// Garis bawahi huruf c yang menentukan bunyi
+function highlight(word,type){
+  const out=[]; let marked=false;
+  for(let i=0;i<word.length;i++){
+    const ch=word[i], nx=word[i+1]||'';
+    const isSoft = ch==='c' && 'eiy'.includes(nx);
+    const isHard = ch==='c' && !'eiy'.includes(nx) && nx!=='k' && nx!=='h';
+    if(!marked && ((type==='soft'&&isSoft)||(type==='hard'&&isHard))){ out.push(`<span class="c">${ch}</span>`); marked=true; }
+    else out.push(ch);
+  }
+  return out.join('');
+}
+
+function speak(text){
+  try{ const u=new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=.85; speechSynthesis.cancel(); speechSynthesis.speak(u);}catch(e){}
+}
+
+function toast(msg,color){
+  const t=document.getElementById('toast'); t.textContent=msg; t.style.background=color;
+  t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1100);
+}
+
+function updateStats(){
+  document.getElementById('score').textContent=score;
+  document.getElementById('miss').textContent=miss;
+  document.getElementById('left').textContent=left;
+}
+
+function clearSelection(){
+  if(selected) selected.classList.remove('selected');
+  selected=null;
+  document.querySelectorAll('.basket').forEach(b=>b.classList.remove('target'));
+}
+
+function newGame(){
+  score=0; miss=0; clearSelection();
+  pool.innerHTML='';
+  document.querySelectorAll('.basket .items').forEach(i=>i.innerHTML='');
+  const words=shuffle([
+    ...shuffle([...HARD]).slice(0,PER_TYPE).map(w=>({w,type:'hard'})),
+    ...shuffle([...SOFT]).slice(0,PER_TYPE).map(w=>({w,type:'soft'}))
+  ]);
+  left=words.length;
+  words.forEach(({w,type})=>{
+    const el=document.createElement('div');
+    el.className='word'; el.textContent=w; el.draggable=true;
+    el.dataset.type=type; el.dataset.word=w;
+    el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',w); selected=el;});
+    el.addEventListener('click',()=>{
+      if(el.classList.contains('correct')) return;
+      if(selected===el){clearSelection();return;}
+      clearSelection(); selected=el; el.classList.add('selected');
+      document.querySelectorAll('.basket').forEach(b=>b.classList.add('target'));
+    });
+    el.addEventListener('dblclick',()=>speak(w));
+    pool.appendChild(el);
+  });
+  document.getElementById('win').classList.remove('show');
+  updateStats();
+}
+
+function tryDrop(el,basketType,basket){
+  if(!el||el.classList.contains('correct')) return;
+  if(el.dataset.type===basketType){
+    score++; left--;
+    el.classList.remove('selected'); el.classList.add('correct');
+    el.draggable=false;
+    el.innerHTML=highlight(el.dataset.word,basketType);
+    basket.querySelector('.items').appendChild(el);
+    toast(['Hebat! 🎉','Benar! ✅','Mantap! 🌟','Keren! 👍'][Math.floor(Math.random()*4)],'var(--ok)');
+    speak(el.dataset.word);
+  }else{
+    miss++;
+    el.classList.remove('wrong'); void el.offsetWidth; el.classList.add('wrong');
+    toast('Coba lagi! Lihat huruf setelah C 👀','var(--bad)');
+  }
+  clearSelection(); updateStats();
+  if(left===0) setTimeout(showWin,500);
+}
+
+document.querySelectorAll('.basket').forEach(b=>{
+  b.addEventListener('dragover',e=>{e.preventDefault(); b.classList.add('over');});
+  b.addEventListener('dragleave',()=>b.classList.remove('over'));
+  b.addEventListener('drop',e=>{e.preventDefault(); b.classList.remove('over'); tryDrop(selected,b.dataset.type,b);});
+  b.addEventListener('click',()=>{ if(selected) tryDrop(selected,b.dataset.type,b); });
+});
+
+function showWin(){
+  const total=score+miss, pct=total?score/total:1;
+  const stars=pct===1?3:pct>=.75?2:1;
+  document.getElementById('stars').textContent='⭐'.repeat(stars)+'☆'.repeat(3-stars);
+  document.getElementById('winText').textContent=`Kamu menjodohkan ${score} kata dengan ${miss} kesalahan.`;
+  document.getElementById('win').classList.add('show');
+}
+
+document.getElementById('newBtn').onclick=newGame;
+document.getElementById('againBtn').onclick=newGame;
+document.getElementById('ruleBtn').onclick=()=>document.getElementById('rule').classList.toggle('open');
+
+newGame();
+</script>
+<a href="index.html" style="position:fixed;left:12px;bottom:12px;z-index:50;background:#fff;color:#2b2d42;text-decoration:none;font:700 15px system-ui,sans-serif;padding:8px 14px;border-radius:999px;box-shadow:0 3px 10px rgba(0,0,0,.2)">🏠 Menu</a>
+</body>
+</html>
