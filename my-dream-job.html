@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dream Job</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@700;800&display=swap">
+<style>
+/* Lembar kerja "My Dream Job": kartu buku tulis dengan 5 kotak bergaris putus-putus, satu warna label per bagian. */
+:root{
+  --paper:#fffdf8; --ink:#1f2a3c; --muted:#5d6a7c; --line:#c9d1dc; --hi:#fff0a8; --word:#ffd447;
+  --blue:#1f6fe0; --good:#1f9d66;
+  --display:"Baloo 2","Comic Sans MS",system-ui,sans-serif;
+  --body:"Nunito",system-ui,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:#e9f1fb;background-image:linear-gradient(#dfe9f6 1px,transparent 1px),linear-gradient(90deg,#dfe9f6 1px,transparent 1px);background-size:24px 24px}
+body{margin:0;color:var(--ink);font-family:var(--body);font-size:18px;padding:14px 14px 90px}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:4px solid var(--blue);outline-offset:3px}
+.hidden{display:none!important}
+
+/* header */
+.bar{display:flex;align-items:center;gap:10px}
+.home{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:#fff;text-decoration:none;font-size:22px;box-shadow:0 3px 0 var(--line);flex-shrink:0}
+.bar .t{flex:1;font-weight:800;color:var(--muted);font-size:.95rem}
+
+/* pilih profesi */
+.jobs{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;scrollbar-width:thin}
+.job{flex:none;border:3px solid var(--line);background:#fff;border-radius:16px;padding:6px 12px;display:flex;align-items:center;gap:6px;font-family:var(--display);font-weight:800;font-size:1.05rem;box-shadow:0 3px 0 var(--line)}
+.job span{font-size:1.4rem}
+.job.on{border-color:var(--blue);background:#e5efff;color:#174fa3;box-shadow:0 3px 0 var(--blue)}
+
+/* lembar */
+.sheet{background:var(--paper);border:3px solid var(--ink);border-radius:26px;padding:18px 16px 20px;box-shadow:0 8px 0 rgba(31,42,60,.12);display:flex;flex-direction:column;gap:18px}
+.title{display:flex;align-items:center;justify-content:center;gap:12px;border-bottom:3px solid var(--ink);padding-bottom:10px;margin:0 -16px 0;padding-inline:16px}
+.title h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,8vw,48px);line-height:1;margin:0}
+.avatar{font-size:clamp(40px,10vw,56px);line-height:1;animation:bob 2.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-4deg)}}
+.sec{position:relative;border:2.5px dashed #9aa6b5;border-radius:16px;padding:26px 14px 14px;transition:border-color .2s,box-shadow .2s,background .2s}
+.sec.now{border-style:solid;border-color:var(--b);box-shadow:0 0 0 5px color-mix(in srgb,var(--c) 70%,transparent);background:#fff}
+.tag{position:absolute;top:-16px;left:12px;background:var(--c);border:2.5px solid var(--b);border-radius:12px;padding:2px 12px;font-family:var(--display);font-weight:800;font-size:1.05rem;display:flex;align-items:center;gap:6px;color:var(--ink)}
+.secplay{position:absolute;top:-16px;right:12px;width:36px;height:36px;border-radius:50%;border:2.5px solid var(--b);background:#fff;font-size:15px;display:grid;place-items:center}
+.sen{margin:0;font-size:1.25rem;line-height:1.6;font-weight:700;border-radius:8px;padding:0 4px;margin-left:-4px;transition:background .2s}
+.sen+.sen{margin-top:4px}
+.sen.now{background:var(--hi)}
+.w{border-radius:6px;padding:0 1px;cursor:pointer;transition:background .1s}
+.w:hover{background:#e8eefb}
+.w.say{background:var(--word);box-shadow:0 0 0 2px var(--word)}
+.w.kw{color:var(--blue);font-weight:800}
+.tr{margin:2px 0 0;font-size:.95rem;color:#8a5a00;font-weight:700;font-style:italic;line-height:1.4}
+.notr .tr{display:none}
+
+/* kontrol */
+.ctrl{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:3px solid var(--ink);padding:10px 14px calc(10px + env(safe-area-inset-bottom));z-index:20}
+.ctrl .in{max-width:720px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.play{border:0;border-radius:16px;padding:10px 18px;background:var(--blue);color:#fff;font-family:var(--display);font-weight:800;font-size:1.15rem;box-shadow:0 4px 0 #134ea8;flex:1;min-width:150px}
+.play.stop{background:#e0464c;box-shadow:0 4px 0 #a5282e}
+.tg{border:2.5px solid var(--line);background:#f6f8fb;border-radius:14px;padding:8px 10px;font-weight:800;font-size:.9rem;white-space:nowrap}
+.tg.on{border-color:var(--blue);background:#e5efff;color:#174fa3}
+.play:active,.tg:active{transform:translateY(2px)}
+
+/* bantuan */
+.card{background:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 5px 0 var(--line)}
+.card h2{font-family:var(--display);font-size:1.2rem;margin:0 0 8px}
+.vocab{display:flex;flex-wrap:wrap;gap:8px}
+.vc{border:2.5px solid var(--line);background:#f8fafc;border-radius:14px;padding:5px 12px;font-weight:800;text-align:left;line-height:1.2}
+.vc small{display:block;color:var(--muted);font-weight:700;font-size:.78rem}
+.vc:active{transform:scale(.97)}
+.help{margin:0;color:var(--muted);font-weight:700;font-size:.92rem;line-height:1.5}
+.turn{position:fixed;left:50%;bottom:150px;transform:translateX(-50%);background:#1f9d66;color:#fff;font-family:var(--display);font-weight:800;font-size:1.2rem;padding:8px 20px;border-radius:999px;z-index:30;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.warn{background:#fff1e8;border:2px solid #f3c3a6;border-radius:14px;padding:10px 14px;font-weight:700;font-size:.92rem}
+select{font:inherit;font-size:.85rem;border:2.5px solid var(--line);border-radius:12px;padding:6px 8px;background:#f6f8fb;max-width:100%}
+@media (max-width:480px){.sen{font-size:1.12rem}.play{flex-basis:100%}.tg{flex:1;padding:7px 4px;font-size:.85rem}body{padding-bottom:140px}}
+@media (prefers-reduced-motion:reduce){.avatar{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <a class="home" href="index.html" title="Kembali ke semua game" aria-label="Kembali ke semua game">🏠</a>
+    <span class="t">Ketuk kata mana saja untuk mendengar pengucapannya 🔊</span>
+  </div>
+
+  <div class="jobs" id="jobs" role="tablist" aria-label="Pilih profesi"></div>
+
+  <div class="warn hidden" id="noVoice">Browser ini belum mendukung suara. Coba buka dengan Google Chrome atau Safari terbaru.</div>
+
+  <article class="sheet" id="sheet">
+    <div class="title"><h1>My Dream Job</h1><span class="avatar" id="avatar">🪖</span></div>
+    <div id="secs" style="display:flex;flex-direction:column;gap:22px;margin-top:8px"></div>
+  </article>
+
+  <section class="card">
+    <h2>📝 Kata penting</h2>
+    <div class="vocab" id="vocab"></div>
+  </section>
+
+  <section class="card">
+    <h2>💡 Cara belajar</h2>
+    <p class="help">1. Tekan <b>▶ Dengarkan</b> untuk mendengar seluruh cerita. Kata yang sedang dibaca akan menyala kuning.<br>
+    2. Tekan <b>🎤 Ulangi</b>, lalu tirukan setiap kalimat saat muncul tulisan "Your turn!".<br>
+    3. Tekan <b>🐢</b> untuk suara lebih pelan, dan <b>🇮🇩</b> untuk melihat artinya.<br>
+    4. Ketuk tombol ▶ kecil di setiap kotak untuk mendengar satu bagian saja.</p>
+    <div style="margin-top:10px" id="voiceWrap" class="hidden"><label class="help" for="voice">Pilih suara: </label><select id="voice"></select></div>
+  </section>
+</div>
+
+<div class="turn hidden" id="turn">🎤 Your turn!</div>
+
+<nav class="ctrl" aria-label="Kontrol suara">
+  <div class="in">
+    <button class="play" id="play">▶ Dengarkan</button>
+    <button class="tg" id="rep" aria-pressed="false">🎤 Ulangi</button>
+    <button class="tg" id="slow" aria-pressed="false">🐢 Pelan</button>
+    <button class="tg" id="trans" aria-pressed="false">🇮🇩 Arti</button>
+  </div>
+</nav>
+
+<script>
+/* ---------- isi cerita ---------- */
+const SECT=[
+  {k:'I want to be a …',c:'#ffd3df',b:'#e5859f',i:'⭐'},
+  {k:'My job is …',     c:'#ffeab0',b:'#e2bb4f',i:'💼'},
+  {k:'I work …',        c:'#d7efc6',b:'#84bf62',i:'📍'},
+  {k:'I help …',        c:'#cfe4ff',b:'#6fa6e6',i:'🤝'},
+  {k:'I feel …',        c:'#e5daff',b:'#a28ee2',i:'💜'}
+];
+const JOBS=[
+  {id:'soldier',e:'🪖',n:'Soldier',kw:['soldier','soldiers'],parts:[
+    [['I want to be a soldier.','Aku ingin menjadi tentara.']],
+    [['A soldier protects our country and keeps people safe.','Tentara melindungi negara kita dan menjaga orang-orang tetap aman.']],
+    [['I work in the army.','Aku bekerja di angkatan darat.'],['I work with other soldiers.','Aku bekerja bersama tentara lainnya.']],
+    [['I help to keep our country safe.','Aku membantu menjaga negara kita tetap aman.'],['I also help people in times of trouble, like natural disasters.','Aku juga membantu orang saat ada kesulitan, seperti bencana alam.']],
+    [['I feel proud because I can serve my country and help many people.','Aku merasa bangga karena aku bisa mengabdi pada negaraku dan menolong banyak orang.']]
+  ],vocab:[['soldier','tentara'],['protect','melindungi'],['country','negara'],['safe','aman'],['army','angkatan darat'],['natural disasters','bencana alam'],['proud','bangga'],['serve','mengabdi']]},
+  {id:'doctor',e:'🧑‍⚕️',n:'Doctor',kw:['doctor'],parts:[
+    [['I want to be a doctor.','Aku ingin menjadi dokter.']],
+    [['A doctor helps sick people get better.','Dokter membantu orang sakit menjadi sembuh.']],
+    [['I work in a hospital.','Aku bekerja di rumah sakit.'],['I work with nurses.','Aku bekerja bersama perawat.']],
+    [['I help people when they are sick or hurt.','Aku menolong orang saat mereka sakit atau terluka.'],['I also teach people to stay healthy.','Aku juga mengajari orang agar tetap sehat.']],
+    [['I feel happy because I can help people feel better.','Aku merasa senang karena aku bisa membuat orang merasa lebih baik.']]
+  ],vocab:[['doctor','dokter'],['sick','sakit'],['hospital','rumah sakit'],['nurse','perawat'],['hurt','terluka'],['healthy','sehat'],['happy','senang']]},
+  {id:'teacher',e:'🧑‍🏫',n:'Teacher',kw:['teacher','teachers'],parts:[
+    [['I want to be a teacher.','Aku ingin menjadi guru.']],
+    [['A teacher helps children learn new things.','Guru membantu anak-anak mempelajari hal baru.']],
+    [['I work at a school.','Aku bekerja di sekolah.'],['I work with students and other teachers.','Aku bekerja bersama murid dan guru lainnya.']],
+    [['I help children read, write, and count.','Aku membantu anak-anak membaca, menulis, dan berhitung.'],['I also help them to be kind to others.','Aku juga membantu mereka untuk baik kepada orang lain.']],
+    [['I feel happy because I can see my students grow smart.','Aku merasa senang karena aku bisa melihat murid-muridku tumbuh pintar.']]
+  ],vocab:[['teacher','guru'],['children','anak-anak'],['learn','belajar'],['school','sekolah'],['students','murid'],['read','membaca'],['write','menulis'],['count','berhitung'],['kind','baik hati']]},
+  {id:'firefighter',e:'🧑‍🚒',n:'Firefighter',kw:['firefighter'],parts:[
+    [['I want to be a firefighter.','Aku ingin menjadi pemadam kebakaran.']],
+    [['A firefighter puts out fires and saves people.','Pemadam kebakaran memadamkan api dan menyelamatkan orang.']],
+    [['I work at a fire station.','Aku bekerja di kantor pemadam kebakaran.'],['I work with a team.','Aku bekerja bersama sebuah tim.']],
+    [['I help people when there is a fire.','Aku menolong orang saat ada kebakaran.'],['I also rescue people and animals in danger.','Aku juga menyelamatkan orang dan hewan yang dalam bahaya.']],
+    [['I feel brave because I can keep people safe.','Aku merasa berani karena aku bisa menjaga orang tetap aman.']]
+  ],vocab:[['firefighter','pemadam kebakaran'],['fire','api'],['save','menyelamatkan'],['fire station','pos pemadam'],['team','tim'],['rescue','menyelamatkan'],['danger','bahaya'],['brave','berani']]},
+  {id:'farmer',e:'🧑‍🌾',n:'Farmer',kw:['farmer'],parts:[
+    [['I want to be a farmer.','Aku ingin menjadi petani.']],
+    [['A farmer grows food for people.','Petani menanam makanan untuk orang-orang.']],
+    [['I work on a farm.','Aku bekerja di ladang.'],['I work with plants and animals.','Aku bekerja dengan tanaman dan hewan.']],
+    [['I help to grow rice, fruit, and vegetables.','Aku membantu menanam padi, buah, dan sayuran.'],['I also take care of cows and chickens.','Aku juga merawat sapi dan ayam.']],
+    [['I feel proud because everyone needs food.','Aku merasa bangga karena semua orang membutuhkan makanan.']]
+  ],vocab:[['farmer','petani'],['grow','menanam'],['food','makanan'],['farm','ladang'],['plants','tanaman'],['rice','padi'],['vegetables','sayuran'],['take care of','merawat']]},
+  {id:'pilot',e:'🧑‍✈️',n:'Pilot',kw:['pilot','pilots'],parts:[
+    [['I want to be a pilot.','Aku ingin menjadi pilot.']],
+    [['A pilot flies an airplane.','Pilot menerbangkan pesawat.']],
+    [['I work in an airplane and at the airport.','Aku bekerja di pesawat dan di bandara.'],['I work with other pilots and flight attendants.','Aku bekerja bersama pilot lain dan pramugari.']],
+    [['I help people travel to many places.','Aku membantu orang bepergian ke banyak tempat.'],['I also keep the passengers safe.','Aku juga menjaga para penumpang tetap aman.']],
+    [['I feel excited because I can fly high in the sky.','Aku merasa gembira karena aku bisa terbang tinggi di langit.']]
+  ],vocab:[['pilot','pilot'],['fly','terbang'],['airplane','pesawat'],['airport','bandara'],['flight attendant','pramugari'],['travel','bepergian'],['passengers','penumpang'],['excited','gembira']]}
+];
+
+/* ---------- penyimpanan ringan ---------- */
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+let job=JOBS.find(j=>j.id===LS.get('mdj-job','soldier'))||JOBS[0];
+let slow=!!LS.get('mdj-slow',false),showTr=!!LS.get('mdj-tr',false),repeat=false;
+let SENT=[]; // {el,text,words:[{el,start,end}],sec}
+
+/* ---------- tampilan ---------- */
+function renderJobs(){
+  $('#jobs').innerHTML=JOBS.map(j=>`<button class="job${j===job?' on':''}" role="tab" aria-selected="${j===job}" data-id="${j.id}"><span>${j.e}</span>${j.n}</button>`).join('');
+}
+function renderSheet(){
+  SENT=[];
+  $('#avatar').textContent=job.e;
+  $('#secs').innerHTML=SECT.map((s,si)=>{
+    const rows=job.parts[si].map(([en,id])=>{
+      const idx=SENT.length;SENT.push({text:en,sec:si,words:[]});
+      let html='',re=/\S+/g,m;
+      while((m=re.exec(en))){
+        const raw=m[0],clean=raw.toLowerCase().replace(/[^a-z']/g,'');
+        const kw=job.kw.includes(clean)&&si===0;
+        html+=`<span class="w${kw?' kw':''}" data-s="${idx}" data-start="${m.index}" data-end="${m.index+raw.length}">${esc(raw)}</span> `;
+      }
+      return `<p class="sen" data-s="${idx}">${html.trim()}</p><p class="tr">${esc(id)}</p>`;
+    }).join('');
+    return `<div class="sec" data-sec="${si}" style="--c:${s.c};--b:${s.b}">
+      <span class="tag">${s.k}</span>
+      <button class="secplay" data-sec="${si}" aria-label="Dengarkan bagian ${s.k}">▶</button>
+      ${rows}</div>`;
+  }).join('');
+  SENT.forEach((s,i)=>{s.el=$(`.sen[data-s="${i}"]`);s.words=$$(`.w[data-s="${i}"]`).map(el=>({el,start:+el.dataset.start,end:+el.dataset.end}))});
+  $('#vocab').innerHTML=job.vocab.map(([en,id])=>`<button class="vc" data-say="${esc(en)}">🔊 ${esc(en)}<small>${esc(id)}</small></button>`).join('');
+  applyToggles();
+}
+function applyToggles(){
+  $('#sheet').classList.toggle('notr',!showTr);
+  [['#slow',slow],['#trans',showTr],['#rep',repeat]].forEach(([s,v])=>{$(s).classList.toggle('on',v);$(s).setAttribute('aria-pressed',v)});
+}
+
+/* ---------- suara ---------- */
+const synth=window.speechSynthesis;
+let voices=[],voice=null,run=0,playing=false;
+function loadVoices(){
+  if(!synth)return;
+  voices=synth.getVoices().filter(v=>/^en[-_]/i.test(v.lang));
+  if(!voices.length)return;
+  const saved=LS.get('mdj-voice','');
+  const pref=[saved,'Google US English','Samantha','Microsoft Aria','Microsoft Jenny','Microsoft Zira','Google UK English Female'];
+  voice=null;for(const p of pref){voice=voices.find(v=>v.name===p);if(voice)break}
+  voice=voice||voices.find(v=>/en[-_]US/i.test(v.lang))||voices[0];
+  $('#voice').innerHTML=voices.map(v=>`<option value="${esc(v.name)}"${v===voice?' selected':''}>${esc(v.name)} (${v.lang})</option>`).join('');
+  $('#voiceWrap').classList.toggle('hidden',voices.length<2);
+}
+if(!synth){$('#noVoice').classList.remove('hidden')}
+else{loadVoices();synth.onvoiceschanged=loadVoices}
+$('#voice').onchange=e=>{voice=voices.find(v=>v.name===e.target.value)||voice;LS.set('mdj-voice',voice.name)};
+
+function utter(text,rate){
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=voice?voice.lang:'en-US';if(voice)u.voice=voice;u.rate=rate||(slow?.65:.9);u.pitch=1.05;
+  return u;
+}
+function clearMarks(){$$('.sen.now').forEach(e=>e.classList.remove('now'));$$('.w.say').forEach(e=>e.classList.remove('say'));$$('.sec.now').forEach(e=>e.classList.remove('now'))}
+function stopAll(){run++;playing=false;if(synth)synth.cancel();clearMarks();$('#turn').classList.add('hidden');setPlayBtn()}
+function setPlayBtn(){const b=$('#play');b.textContent=playing?'⏹ Berhenti':'▶ Dengarkan';b.classList.toggle('stop',playing)}
+
+function speakSentence(i,token){
+  return new Promise(res=>{
+    const s=SENT[i];if(!s||!synth)return res();
+    clearMarks();s.el.classList.add('now');
+    const sec=$(`.sec[data-sec="${s.sec}"]`);sec.classList.add('now');
+    sec.scrollIntoView({behavior:'smooth',block:'center'});
+    const u=utter(s.text);let gotBoundary=false,fallback=null;
+    u.onboundary=e=>{
+      if(token!==run||e.name&&e.name!=='word')return;gotBoundary=true;
+      s.words.forEach(w=>w.el.classList.toggle('say',e.charIndex>=w.start&&e.charIndex<w.end));
+    };
+    u.onstart=()=>{ // jika browser tidak memberi posisi kata, nyalakan kata berdasarkan perkiraan waktu
+      const per=(slow?520:380);let k=0;
+      fallback=setInterval(()=>{if(gotBoundary||token!==run){clearInterval(fallback);return}
+        s.words.forEach((w,j)=>w.el.classList.toggle('say',j===k));k++;if(k>s.words.length)clearInterval(fallback)},per);
+    };
+    let fin=false;const guard=setTimeout(()=>done(),s.words.length*(slow?900:650)+4000); // pengaman bila suara tidak memberi tanda selesai
+    const done=()=>{if(fin)return;fin=true;clearTimeout(guard);clearInterval(fallback);s.words.forEach(w=>w.el.classList.remove('say'));res()};
+    u.onend=done;u.onerror=done;
+    synth.speak(u);
+  });
+}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function playRange(from,to){
+  if(!synth)return;
+  stopAll();const token=++run;playing=true;setPlayBtn();
+  for(let i=from;i<to;i++){
+    if(token!==run)return;
+    await speakSentence(i,token);
+    if(token!==run)return;
+    if(repeat){
+      $('#turn').classList.remove('hidden');
+      const words=SENT[i].words.length;await wait((slow?1100:850)*words+1200);
+      $('#turn').classList.add('hidden');
+    }else await wait(350);
+  }
+  if(token===run){playing=false;clearMarks();setPlayBtn()}
+}
+function sayWord(text){
+  if(!synth)return;stopAll();
+  const u=utter(text.replace(/[^A-Za-z' -]/g,''),slow?.55:.8);synth.speak(u);
+}
+
+/* ---------- tombol ---------- */
+$('#jobs').onclick=e=>{const b=e.target.closest('.job');if(!b)return;stopAll();job=JOBS.find(j=>j.id===b.dataset.id);LS.set('mdj-job',job.id);renderJobs();renderSheet();window.scrollTo({top:0,behavior:'smooth'})};
+$('#play').onclick=()=>{if(playing)stopAll();else playRange(0,SENT.length)};
+$('#rep').onclick=()=>{repeat=!repeat;applyToggles();if(repeat&&!playing)playRange(0,SENT.length)};
+$('#slow').onclick=()=>{slow=!slow;LS.set('mdj-slow',slow);applyToggles()};
+$('#trans').onclick=()=>{showTr=!showTr;LS.set('mdj-tr',showTr);applyToggles()};
+$('#secs').addEventListener('click',e=>{
+  const sp=e.target.closest('.secplay');
+  if(sp){const si=+sp.dataset.sec,idx=SENT.map((s,i)=>s.sec===si?i:-1).filter(i=>i>=0);playRange(idx[0],idx[idx.length-1]+1);return}
+  const w=e.target.closest('.w');
+  if(w){sayWord(w.textContent);w.classList.add('say');setTimeout(()=>w.classList.remove('say'),700)}
+});
+$('#vocab').onclick=e=>{const b=e.target.closest('.vc');if(b)sayWord(b.dataset.say)};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopAll()});
+
+renderJobs();renderSheet();
+</script>
+</body>
+</html>
