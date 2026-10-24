@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sports Fun English</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@700;800&display=swap">
+<style>
+/* Tema lapangan olahraga + label hijau-limau seperti buku. Warna grammar mengikuti buku:
+   hijau tua = like + -ing, pink = Is it / Are they, biru = Me too. */
+:root{
+  --court:#e8f4d9; --line:#cfe5b4; --card:#fff; --ink:#22303f; --soft:#5c6b78;
+  --lime:#8bb52a; --lime-d:#6a8d1a; --green:#2f7a4b; --pink:#e2437e; --blue:#2f8be0; --orange:#f28c28; --purple:#8a55c9;
+  --good:#2f9e57; --good-bg:#ddf5e5; --bad:#d63a2f; --bad-bg:#fce1de; --sun:#ffc23d;
+  --display:"Baloo 2","Arial Rounded MT Bold","Trebuchet MS",sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:var(--court);background-image:linear-gradient(90deg,transparent calc(50% - 2px),#ffffff99 calc(50% - 2px),#ffffff99 calc(50% + 2px),transparent calc(50% + 2px)),radial-gradient(circle at 50% 260px,transparent 118px,#ffffff99 119px,#ffffff99 123px,transparent 124px)}
+body{margin:0;color:var(--ink);font-family:var(--body);font-size:16px;padding:12px 14px 40px}
+.wrap{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.hidden{display:none!important}
+
+/* top bar */
+.bar{display:flex;align-items:center;gap:10px}
+.home{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--card);text-decoration:none;font-size:22px;box-shadow:0 3px 0 var(--line);flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0;background:none;border:0;padding:0;text-align:left}
+.brand .logo{width:46px;height:46px;border-radius:14px;background:var(--lime);display:grid;place-items:center;font-size:26px;box-shadow:0 4px 0 var(--lime-d);flex-shrink:0}
+.brand h1{font-family:var(--display);font-weight:800;font-size:1.5rem;line-height:1;margin:0}
+.brand small{display:block;font-weight:700;color:var(--soft);font-size:.8rem;margin-top:3px}
+.pill{display:flex;align-items:center;gap:6px;background:var(--card);border-radius:999px;padding:6px 13px;font-weight:800;box-shadow:0 3px 0 var(--line);font-variant-numeric:tabular-nums;white-space:nowrap}
+.icon-btn{border:0;background:var(--card);width:42px;height:42px;border-radius:50%;font-size:20px;box-shadow:0 3px 0 var(--line);flex-shrink:0}
+
+/* map */
+.hello{background:var(--card);border-radius:22px;padding:16px 18px;display:flex;gap:14px;align-items:center;box-shadow:0 6px 0 var(--line)}
+.hello .kids{font-size:44px;line-height:1;flex-shrink:0}
+.hello h2{font-family:var(--display);font-size:1.4rem;margin:0;line-height:1.15;text-wrap:balance}
+.hello p{margin:4px 0 0;color:var(--soft);font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.cell{border:0;background:var(--card);border-radius:18px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;box-shadow:0 5px 0 rgba(34,48,63,.12);transition:transform .15s}
+.cell:hover{transform:translateY(-3px)}
+.cell .tag{align-self:flex-start;font-family:var(--display);font-weight:800;color:#fff;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-size:1rem;line-height:1}
+.cell .ic{font-size:40px;line-height:1.1;margin-top:-6px}
+.cell b{font-family:var(--display);font-size:1.05rem;line-height:1.1}
+.cell span.id{font-size:.75rem;color:var(--soft);font-weight:700;line-height:1.2}
+.stars{letter-spacing:2px;font-size:1rem;color:#d4dae0}
+.stars .on{color:var(--sun)}
+.hint{font-size:.85rem;color:var(--soft);font-weight:700;text-align:center;margin:0}
+.lime{display:inline-block;background:var(--lime);color:#fff;border-radius:8px;padding:0 7px;font-weight:800}
+
+/* play */
+.head{display:flex;align-items:center;gap:10px}
+.back{border:0;background:var(--card);border-radius:12px;padding:8px 12px;font-weight:800;box-shadow:0 3px 0 var(--line);flex-shrink:0}
+.head .tag{font-family:var(--display);font-weight:800;color:#fff;min-width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:1.3rem;flex-shrink:0}
+.head h2{font-family:var(--display);font-size:1.3rem;margin:0;line-height:1.1}
+.head p{margin:2px 0 0;font-size:.85rem;color:var(--soft);font-weight:700;line-height:1.3}
+.head .t{flex:1;min-width:0}
+.progress{height:12px;background:var(--card);border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--lime);border-radius:99px;transition:width .35s}
+.plate{background:var(--card);border-radius:24px;padding:20px 16px;box-shadow:0 7px 0 var(--line);display:flex;flex-direction:column;align-items:center;gap:16px}
+.big{font-size:96px;line-height:1;filter:drop-shadow(0 6px 0 rgba(34,48,63,.08));display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.big.many{font-size:64px}
+.big svg,.mcard svg{width:1em;height:1em;flex-shrink:0;display:block}
+.prompt{font-family:var(--display);font-weight:600;font-size:1.5rem;text-align:center;line-height:1.3;display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;text-wrap:balance;margin:0}
+.blank{display:inline-block;min-width:84px;border-bottom:4px dashed var(--sun);color:var(--green);font-weight:800;text-align:center}
+.blank.pink{color:var(--pink)}
+.say{border:0;background:var(--blue);color:#fff;width:40px;height:40px;border-radius:50%;font-size:18px;flex-shrink:0;box-shadow:0 3px 0 #1f68b0}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:560px}
+.opts.one{grid-template-columns:1fr}
+.opt{border:3px solid #e3e8ec;background:var(--card);border-radius:16px;padding:13px 12px;font-weight:800;font-size:1.15rem;box-shadow:0 4px 0 #e3e8ec;transition:transform .1s;min-width:0}
+.opts.one .opt{text-align:left;font-size:1.05rem;padding:12px 16px}
+.opt:hover:not(:disabled){transform:translateY(-2px);border-color:var(--blue)}
+.opt.right{background:var(--good-bg);border-color:var(--good);box-shadow:0 4px 0 var(--good);color:#1e6b3a}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad);box-shadow:0 4px 0 var(--bad);color:#9b2a22;animation:shake .35s}
+.opt:disabled{cursor:default}
+.cheer{min-height:1.6em;font-family:var(--display);font-weight:800;font-size:1.15rem;color:var(--good);margin:0;text-align:center}
+.cheer.oops{color:var(--bad)}
+.tip{font-size:.9rem;color:var(--soft);font-weight:800;text-align:center;margin:0;background:#f4f8ec;border-radius:12px;padding:6px 12px}
+@keyframes shake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .4s ease-out}
+
+/* sort */
+.pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:52px;width:100%;padding:10px;border:3px dashed var(--line);border-radius:16px}
+.chip{border:0;border-radius:12px;padding:8px 12px;font-weight:800;font-size:1.05rem;background:var(--lime);color:#fff;box-shadow:0 4px 0 var(--lime-d)}
+.chip.sel{background:var(--sun);color:var(--ink);box-shadow:0 4px 0 #c9921a;transform:translateY(-2px)}
+.chip.ok{background:var(--good-bg);color:#1e6b3a;box-shadow:none;cursor:default;font-size:.95rem;padding:5px 10px}
+.chip.wrong{animation:shake .35s}
+.baskets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.basket{border:3px solid var(--line);background:#f8fbf3;border-radius:16px;padding:10px 6px;min-height:150px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.basket h3{margin:0;font-family:var(--display);font-size:1.3rem;line-height:1}
+.basket small{color:var(--soft);font-weight:700;font-size:.75rem;text-align:center}
+.basket .in{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.basket.target{border-color:var(--sun);background:#fff9e3}
+@media (max-width:520px){.baskets{grid-template-columns:1fr}.basket{min-height:auto}}
+
+/* chat */
+.chat{width:100%;max-width:560px;display:flex;flex-direction:column;gap:10px;background:#eef5e3;border-radius:18px;padding:14px}
+.msg{display:flex;align-items:flex-end;gap:8px}
+.msg.me{justify-content:flex-end}
+.av{font-size:34px;line-height:1;flex-shrink:0}
+.bub{background:#fff;border-radius:16px 16px 16px 4px;padding:10px 14px;font-weight:800;font-size:1.15rem;line-height:1.35;box-shadow:0 2px 0 rgba(0,0,0,.06)}
+.me .bub{border-radius:16px 16px 4px 16px;background:#dff0ff}
+.feel{display:flex;align-items:center;gap:6px;background:#fff;border-radius:16px;padding:6px 12px;font-size:40px;line-height:1}
+.feel span{font-size:28px}
+.g{background:var(--green);color:#fff;border-radius:7px;padding:0 6px}
+.pk{background:var(--pink);color:#fff;border-radius:7px;padding:0 6px}
+.bl{background:var(--blue);color:#fff;border-radius:7px;padding:0 6px}
+
+/* arrange */
+.line{width:100%;max-width:600px;min-height:66px;border:3px dashed var(--line);border-radius:16px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;background:#f8fbf3}
+.line.bad{animation:shake .35s;border-color:var(--bad)}
+.line.good{border-style:solid;border-color:var(--good);background:var(--good-bg)}
+.bank{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:600px}
+.tile{border:0;border-radius:12px;padding:10px 14px;font-weight:800;font-size:1.15rem;background:var(--sun);color:#4a3500;box-shadow:0 4px 0 #c38e17}
+.line .tile{background:var(--blue);color:#fff;box-shadow:0 4px 0 #1f68b0}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{border:0;border-radius:14px;padding:12px 22px;font-weight:800;font-size:1.05rem;background:var(--lime);color:#fff;box-shadow:0 4px 0 var(--lime-d)}
+.btn.ghost{background:#eef2f4;color:var(--ink);box-shadow:0 4px 0 #d6dde2}
+.btn.red{background:var(--orange);box-shadow:0 4px 0 #b9661a}
+.btn:disabled{opacity:.45;cursor:default}
+
+/* match */
+.match{display:grid;grid-template-columns:1fr 1.4fr;gap:12px 18px;width:100%;max-width:560px}
+.col{display:flex;flex-direction:column;gap:10px}
+.mcard{border:3px solid #e3e8ec;background:var(--card);border-radius:16px;min-height:62px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.05rem;box-shadow:0 4px 0 #e3e8ec;padding:6px;line-height:1.2}
+.mcard.pic{font-size:40px}
+.mcard.pic svg{width:1.35em;height:1.35em}
+.big svg{width:1.2em;height:1.2em}
+.mcard.sel{border-color:var(--blue);box-shadow:0 4px 0 var(--blue);transform:translateY(-2px)}
+.mcard.done{background:var(--good-bg);border-color:var(--good);box-shadow:0 4px 0 var(--good);cursor:default}
+.mcard.wrong{animation:shake .35s;border-color:var(--bad)}
+.said{min-height:1.5em;font-weight:800;font-size:1.1rem;text-align:center;margin:0;color:var(--green)}
+
+/* phonics */
+.cols{display:flex;gap:14px;justify-content:center;align-items:center}
+.pcol{display:flex;flex-direction:column;gap:10px}
+.ball{border:0;width:72px;height:72px;border-radius:50%;font-family:var(--display);font-weight:800;font-size:1.7rem;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.18);opacity:.55;transition:transform .12s,opacity .12s}
+.ball.sel{opacity:1;transform:scale(1.1);outline:4px solid var(--ink);outline-offset:2px}
+.arrow{font-size:1.4rem;color:var(--soft);font-weight:800}
+.word{font-family:var(--display);font-weight:800;font-size:2.4rem;letter-spacing:2px;min-height:1.2em}
+.bigsay{border:0;background:var(--blue);color:#fff;border-radius:20px;padding:14px 26px;font-family:var(--display);font-weight:800;font-size:1.4rem;box-shadow:0 5px 0 #1f68b0}
+
+/* result */
+.result{text-align:center}
+.result .big-stars{font-size:62px;letter-spacing:6px;color:#d4dae0}
+.result .big-stars .on{color:var(--sun);display:inline-block;animation:pop .5s both}
+.result h2{font-family:var(--display);font-size:2rem;margin:0}
+.result p{margin:0;color:var(--soft);font-weight:700}
+canvas#fx{position:fixed;inset:0;pointer-events:none;width:100%;height:100%;z-index:5}
+
+@media (max-width:640px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .prompt{font-size:1.25rem}.big{font-size:80px}.big.many{font-size:52px}
+  .opt{font-size:1rem}.brand h1{font-size:1.1rem}.brand small{display:none}.pill{padding:6px 10px}
+  .bub{font-size:1.02rem}.ball{width:62px;height:62px;font-size:1.45rem}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <a class="home" href="index.html" title="Kembali ke semua game" aria-label="Kembali ke semua game">🏠</a>
+    <button class="brand" id="brand" aria-label="Back to the menu">
+      <span class="logo">🏸</span>
+      <span><h1>Sports Fun English</h1><small>I like playing… · I can… · Is it / Are they</small></span>
+    </button>
+    <span class="pill" title="Total stars">⭐ <span id="total">0</span>/24</span>
+    <button class="icon-btn" id="mute" aria-label="Sound on or off">🔊</button>
+  </div>
+  <main id="view" class="wrap"></main>
+</div>
+<canvas id="fx"></canvas>
+
+<script>
+/* ---------- gambar alat yang tidak ada emojinya ---------- */
+const SVG={
+  helmet:`<svg viewBox="0 0 64 64"><path d="M8 40a24 22 0 0 1 48 0z" fill="#4f6fd6" stroke="#2c3f8f" stroke-width="2.5"/><path d="M18 22c4-6 10-8 14-8M30 18c6-2 12 0 16 5" stroke="#8fa8f0" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="5" y="38" width="54" height="6" rx="3" fill="#2c3f8f"/><path d="M14 44q18 18 36 0" stroke="#f2c230" stroke-width="3" fill="none"/><rect x="28" y="54" width="8" height="5" rx="2" fill="#2c7fd6"/></svg>`,
+  bat:`<svg viewBox="0 0 64 64"><path d="M10 56l5 3 34-40c4-5 5-9 2-12s-7-2-11 3z" fill="#c98a4b" stroke="#8a5a2c" stroke-width="2.5" stroke-linejoin="round"/><rect x="5" y="52" width="12" height="6" rx="3" transform="rotate(-50 11 55)" fill="#e14b4b"/></svg>`,
+  racket:`<svg viewBox="0 0 64 64"><ellipse cx="38" cy="24" rx="17" ry="20" transform="rotate(35 38 24)" fill="#fff" stroke="#e2437e" stroke-width="4"/><g stroke="#c9ced6" stroke-width="1.4"><path d="M26 12l24 28M22 20l22 26M32 8l22 26M30 36l20-20M24 30l20-20M36 40l18-18"/></g><path d="M27 41L9 59" stroke="#2f8be0" stroke-width="6" stroke-linecap="round"/></svg>`
+};
+const ic=e=>e.startsWith('<svg')?e:e; // emoji atau svg
+/* ---------- data materi ---------- */
+const ACT=[
+  {n:'table tennis',v:'play',e:'🏓'},{n:'basketball',v:'play',e:'🏀'},{n:'football',v:'play',e:'⚽'},
+  {n:'badminton',v:'play',e:'🏸'},{n:'baseball',v:'play',e:'⚾'},{n:'hockey',v:'play',e:'🏒'},
+  {n:'tennis',v:'play',e:'🎾'},{n:'the piano',v:'play',e:'🎹'},{n:'games',v:'play',e:'🎮'},
+  {n:'the guitar',v:'play',e:'🎸'},{n:'a bike',v:'ride',e:'🚲'},{n:'a skateboard',v:'ride',e:'🛹'},
+  {n:'swim',v:'',e:'🏊',g:'swimming'},{n:'draw',v:'',e:'✏️',g:'drawing'},{n:'paint',v:'',e:'🎨',g:'painting'},{n:'read',v:'',e:'📖',g:'reading'}
+];
+const base=a=>a.v?`${a.v} ${a.n}`:a.n;
+const gform=a=>a.v?(a.v==='play'?'playing':'riding'):a.g;
+const ing=a=>a.v?`${gform(a)} ${a.n}`:a.g;
+const ITEMS=[
+  {s:'basketball',p:'basketballs',e:'🏀'},{s:'helmet',p:'helmets',e:SVG.helmet},{s:'skateboard',p:'skateboards',e:'🛹'},
+  {s:'guitar',p:'guitars',e:'🎸'},{s:'bat',p:'bats',e:SVG.bat},{s:'tennis racket',p:'tennis rackets',e:SVG.racket},
+  {s:'bike',p:'bikes',e:'🚲'},{s:'book',p:'books',e:'📕'},{s:'piano',p:'pianos',e:'🎹'},
+  {s:'football',p:'footballs',e:'⚽'},{s:'baseball',p:'baseballs',e:'⚾'},{s:'drum',p:'drums',e:'🥁'}
+];
+const EQUIP=[
+  {act:'riding a bike',eq:'a helmet',e:SVG.helmet},{act:'playing baseball',eq:'a bat',e:SVG.bat},
+  {act:'playing tennis',eq:'a tennis racket',e:SVG.racket},{act:'playing basketball',eq:'a basketball',e:'🏀'},
+  {act:'playing the piano',eq:'a piano',e:'🎹'},{act:'reading',eq:'a book',e:'📖'},
+  {act:'playing badminton',eq:'a shuttlecock',e:'🏸'},{act:'playing football',eq:'a football',e:'⚽'},
+  {act:'riding a skateboard',eq:'a skateboard',e:'🛹'},{act:'painting',eq:'a paintbrush',e:'🖌️'},
+  {act:'playing hockey',eq:'a hockey stick',e:'🏒'},{act:'playing the guitar',eq:'a guitar',e:'🎸'}
+];
+const SENTENCES=[
+  'I like riding bikes .','I can play tennis .',"I don't like playing baseball .",'Do you like playing basketball ?',
+  'What do you like doing ?',"What don't you like doing ?",'Is it a helmet ?','Are they tennis rackets ?',
+  'I like playing badminton .','I can ride a bike .','I have a helmet .','Yes , they are .',"No , it isn't ."
+];
+const PAIRS=[['crab','grab'],['trip','grip'],['drag','brag'],['tram','pram'],['brick','trick'],['crown','brown'],['drop','crop'],['dress','press'],['tree','free'],['grass','brass'],['train','brain'],['drum','crumb']];
+const BUILD=[
+  ['cr','a','b','br','o','t'],['fr','o','g','gr','a','b'],['tr','i','p','dr','a','m'],['dr','u','m','br','o','t'],
+  ['gr','a','b','cr','i','p'],['dr','o','p','tr','a','m'],['cr','o','p','fr','u','b'],['tr','a','m','br','i','g'],
+  ['gr','i','n','dr','o','t'],['br','i','m','pr','a','b']
+];
+const BALL=['#8bb52a','#e2437e','#f28c28','#2b8c8c'];
+
+/* ---------- alat bantu ---------- */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const view=$('#view');
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const sample=(a,n)=>shuffle(a).slice(0,n);
+const PRAISE=['Great job!','Well done!','Super!','You got it!','Excellent!','Awesome!'];
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let timers=[];const later=(f,ms)=>{timers.push(setTimeout(f,ms))};
+function clearTimers(){timers.forEach(clearTimeout);timers=[]}
+
+/* ---------- suara ---------- */
+let muted=!!LS.get('sfe-muted',false),actx=null;
+function tone(f,d,t='sine',when=0,vol=.18){
+  if(muted)return;
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    const o=actx.createOscillator(),g=actx.createGain();o.type=t;o.frequency.value=f;
+    const s=actx.currentTime+when;g.gain.setValueAtTime(vol,s);g.gain.exponentialRampToValueAtTime(.001,s+d);
+    o.connect(g).connect(actx.destination);o.start(s);o.stop(s+d)}catch(e){}
+}
+const sfx={good(){tone(660,.15,'triangle');tone(990,.22,'triangle',.11)},bad(){tone(180,.25,'square',0,.08)},
+  win(){[523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',i*.12))},tap(){tone(440,.06,'sine',0,.08)}};
+function speak(t,rate=.85){
+  if(muted||!('speechSynthesis' in window))return;
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/___/g,'blank').replace(/ ([.?,])/g,'$1'));u.lang='en-US';u.rate=rate;
+    const vs=speechSynthesis.getVoices(),v=vs.find(v=>/Google US English|Samantha|Aria|Jenny/.test(v.name))||vs.find(v=>/^en[-_]US/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang));
+    if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}
+}
+if('speechSynthesis' in window)speechSynthesis.getVoices();
+function setMute(){$('#mute').textContent=muted?'🔇':'🔊';LS.set('sfe-muted',muted)}
+$('#mute').onclick=()=>{muted=!muted;setMute();if(muted&&'speechSynthesis' in window)speechSynthesis.cancel()};
+setMute();
+
+/* ---------- bintang ---------- */
+let STARS=LS.get('sfe-stars',[0,0,0,0,0,0,0,0]);if(!Array.isArray(STARS)||STARS.length!==8)STARS=[0,0,0,0,0,0,0,0];
+function saveStars(){LS.set('sfe-stars',STARS);$('#total').textContent=STARS.reduce((a,b)=>a+b,0)}
+const starHTML=n=>`<span class="stars">${[0,1,2].map(i=>`<span class="${i<n?'on':''}">★</span>`).join('')}</span>`;
+
+/* ---------- pembuat soal ---------- */
+function genName(){
+  return sample(ACT,8).map(a=>{
+    const opts=shuffle([base(a),...sample(ACT.filter(x=>x!==a),3).map(base)]);
+    return {type:'mc',pic:`<div class="big pop">${a.e}</div>`,prompt:'What can you see?',options:opts,answer:base(a),sayAfter:`I can ${base(a)}.`,after:`I can ${base(a)}.`};
+  });
+}
+function genSort(){
+  const picks=[...sample(ACT.filter(a=>a.v==='play'),6),...ACT.filter(a=>a.v==='ride'),...sample(ACT.filter(a=>!a.v),3)];
+  return [{type:'sort',items:shuffle(picks)}];
+}
+function genCircle(){
+  return sample(ACT,10).map((a,i)=>{
+    const t=i%5,rest=a.v?' '+a.n:'',b=a.v||a.n,g=gform(a);
+    const T=[['I can',b,'.'],['I like',g,'.'],["I don't like",g,'.'],['Can you',b,'?'],['Do you like',g,'?']][t];
+    const full=`${T[0]} ${T[1]}${rest}${T[2]}`;
+    return {type:'mc',pic:`<div class="big pop">${a.e}</div>`,prompt:`${T[0]} <span class="blank" id="blank">?</span>${rest}${T[2]}`,
+      options:shuffle([b,g]),answer:T[1],fill:T[1],sayAfter:full,
+      tip:t===0||t===3?'💡 can + kata dasar (play, ride, swim, paint)':'💡 like / don\'t like + kata berakhiran -ing'};
+  });
+}
+const ME='🧒',FR=['👧','👦','🧑','👩'];
+function genChat(){
+  return sample(ACT,8).map((a,i)=>{
+    const o=rnd(ACT.filter(x=>x!==a)),fr=rnd(FR),t=i%5,happy=Math.random()<.5;
+    let q,feel,opts,ans;
+    if(t===0){q=`Do you <span class="g">like ${gform(a)}</span>${a.v?' '+a.n:''}?`;feel=happy;ans=happy?'Yes, I do.':"No, I don't.";opts=['Yes, I do.',"No, I don't.",'Yes, it is.',"No, they aren't."]}
+    else if(t===1){q=`What do you <span class="g">like doing</span>?`;feel=true;ans=`I like ${ing(a)}.`;opts=[ans,`I like ${base(a)}.`,`I don't like ${ing(a)}.`,`I like ${ing(o)}.`]}
+    else if(t===2){q=`I <span class="g">like ${gform(a)}</span>${a.v?' '+a.n:''}.`;feel=true;ans='Me too.';opts=['Me too.','Yes, it is.',"No, they aren't.",'I can play.']}
+    else if(t===3){q=`What <span class="g">don't</span> you <span class="g">like doing</span>?`;feel=false;ans=`I don't like ${ing(a)}.`;opts=[ans,`I like ${ing(a)}.`,`I don't like ${base(a)}.`,`I don't like ${ing(o)}.`]}
+    else{q=`Can you ${base(a)}?`;feel=happy;ans=happy?'Yes, I can.':"No, I can't.";opts=['Yes, I can.',"No, I can't.",'Yes, I do.',"No, it isn't."]}
+    return {type:'chat',fr,q,a,feel,options:shuffle(opts),answer:ans};
+  });
+}
+function genIsAre(){
+  return sample(ITEMS,8).map(it=>{
+    const many=Math.random()<.5,match=Math.random()<.55,other=rnd(ITEMS.filter(x=>x!==it)),ask=match?it:other;
+    const q1=many?`<span class="blank pink" id="blank">?</span> ${it.p}?`:`<span class="blank pink" id="blank">?</span> a ${it.s}?`;
+    const ans1=many?'Are they':'Is it';
+    const q2=many?`Are they ${ask.p}?`:`Is it a ${ask.s}?`;
+    const ans2=many?(match?'Yes, they are.':"No, they aren't."):(match?'Yes, it is.':"No, it isn't.");
+    const pic=`<div class="big pop${many?' many':''}">${(it.e+' ').repeat(many?3:1)}</div>`;
+    return {type:'isare',pic,q1,ans1,full1:many?`Are they ${it.p}?`:`Is it a ${it.s}?`,q2,ans2,name:many?it.p:it.s};
+  });
+}
+function genMatch(){return [{type:'match',items:sample(EQUIP,6)}]}
+function genArrange(){return sample(SENTENCES,6).map(s=>({type:'arrange',words:s.split(' '),answer:s}))}
+function genPhonics(){
+  const ps=sample(PAIRS,4),bs=sample(BUILD,4),out=[];
+  for(let i=0;i<4;i++){
+    const [w1,w2]=ps[i],w=Math.random()<.5?w1:w2;
+    out.push({type:'mc',listen:w,pic:`<button class="bigsay" id="hear">🔊 Listen</button>`,prompt:'Which word do you hear?',options:shuffle([w1,w2]),answer:w,sayAfter:w});
+    out.push({type:'build',b:bs[i]});
+  }
+  return out;
+}
+
+const LEVELS=[
+  {k:'A',t:'Name It',      en:'Look and choose the activity.',          id:'Lihat gambar, pilih nama kegiatannya.',c:'var(--lime)',  f:'🏓',gen:genName},
+  {k:'B',t:'Play or Ride?',en:'Sort the words: play, ride or nothing.',id:'Ketuk kata, lalu ketuk keranjang yang tepat.',c:'var(--orange)',f:'🚲',gen:genSort},
+  {k:'C',t:'Can or Like?', en:'Choose the correct word.',              id:'can + play · like + playing',c:'var(--green)',f:'🎾',gen:genCircle},
+  {k:'D',t:'Chat Time',    en:'Read and choose your answer.',          id:'Jawab pertanyaan teman. 😊 = suka, ☹️ = tidak suka.',c:'var(--blue)',f:'💬',gen:genChat},
+  {k:'E',t:'Is it? Are they?',en:'Choose and answer.',                 id:'Satu benda: Is it. Banyak benda: Are they.',c:'var(--pink)',f:'🏀',gen:genIsAre},
+  {k:'F',t:'Gear Match',   en:'Match the equipment with the activity.',id:'Ketuk gambar alat, lalu ketuk kegiatannya.',c:'var(--purple)',f:'🛹',gen:genMatch},
+  {k:'G',t:'Word Train',   en:'Put the words in order.',               id:'Ketuk kata-kata untuk menyusun kalimat.',c:'#2b8c8c',f:'🚂',gen:genArrange},
+  {k:'H',t:'Sound Blends', en:'Listen: cr, br, fr, gr, tr, dr.',       id:'Dengarkan, lalu pilih atau susun katanya.',c:'#c0563b',f:'🦀',gen:genPhonics}
+];
+
+/* ---------- layar ---------- */
+let S=null;
+function renderMap(){
+  clearTimers();S=null;
+  const done=STARS.filter(s=>s>0).length;
+  view.innerHTML=`
+  <section class="hello"><span class="kids">⛹️🏸</span>
+    <div><h2>${done===8?'You are a sports champion!':'What do you like doing?'}</h2>
+    <p>Belajar nama olahraga, <span class="lime">I like playing…</span>, <span class="lime">I can…</span>, dan <span class="lime">Is it / Are they</span> lewat 8 permainan.</p></div></section>
+  <section class="grid">${LEVELS.map((L,i)=>`
+    <button class="cell" data-i="${i}" aria-label="Game ${L.k}: ${L.t}">
+      <span class="tag" style="background:${L.c}">${L.k}</span>
+      <span class="ic">${L.f}</span><b>${L.t}</b><span class="id">${L.en.split('.')[0]}</span>${starHTML(STARS[i])}
+    </button>`).join('')}</section>
+  <p class="hint">Ketuk 🔊 untuk mendengar pengucapan · Tap 🔊 to listen</p>`;
+  $$('.cell').forEach(b=>b.onclick=()=>{sfx.tap();start(+b.dataset.i)});
+}
+function start(i){
+  clearTimers();const L=LEVELS[i];
+  S={i,L,qs:L.gen(),qi:0,miss:0,steps:0,total:0};
+  const q0=S.qs[0];S.total=q0.type==='match'?q0.items.length:q0.type==='sort'?q0.items.length:S.qs.length;
+  renderQ();
+}
+function header(){
+  const L=S.L,pct=Math.round(S.steps/S.total*100);
+  return `<div class="head"><button class="back" id="back">← Menu</button>
+    <span class="tag" style="background:${L.c}">${L.k}</span>
+    <div class="t"><h2>${L.t}</h2><p>${L.en}<br>${L.id}</p></div></div>
+    <div class="progress"><i style="width:${pct}%"></i></div>`;
+}
+function bindBack(){$('#back').onclick=()=>{sfx.tap();renderMap()}}
+function setProg(){const p=$('.progress i');if(p)p.style.width=Math.round(S.steps/S.total*100)+'%'}
+function cheer(t,ok){const c=$('#cheer');c.className='cheer '+(ok?'pop':'oops');c.textContent=t}
+function renderQ(){
+  const q=S.qs[S.qi];
+  ({mc:renderMC,sort:renderSort,chat:renderChat,isare:renderIsAre,match:renderMatch,arrange:renderArrange,build:renderBuild})[q.type](q);
+}
+function next(){S.qi++;S.steps++;if(S.qi>=S.qs.length)finish();else renderQ()}
+
+/* pilihan ganda umum */
+function optsHTML(options,one){return `<div class="opts${one?' one':''}">${options.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join('')}</div>`}
+function renderMC(q){
+  view.innerHTML=header()+`<section class="plate">
+    ${q.pic||''}
+    <p class="prompt"><span>${q.prompt}</span>${q.fill?`<button class="say" id="say" aria-label="Listen">🔊</button>`:''}</p>
+    ${optsHTML(q.options,q.options.some(o=>o.length>16))}
+    ${q.tip?`<p class="tip">${q.tip}</p>`:''}
+    <p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+  bindBack();
+  if(q.listen){$('#hear').onclick=()=>speak(q.listen,.7);later(()=>speak(q.listen,.7),300)}
+  const sb=$('#say');if(sb)sb.onclick=()=>speak($('.prompt span').textContent.replace('?','blank'));
+  $$('.opt').forEach(b=>b.onclick=()=>{
+    const v=q.options[+b.dataset.i];
+    if(v===q.answer){
+      b.classList.add('right');$$('.opt').forEach(x=>x.disabled=true);sfx.good();
+      if(q.fill){const bl=$('#blank');bl.textContent=q.fill;bl.classList.add('pop')}
+      cheer(rnd(PRAISE)+(q.after?' '+q.after:''),true);speak(q.sayAfter||v);
+      later(next,1700);
+    }else{b.classList.add('wrong');b.disabled=true;S.miss++;sfx.bad();cheer('Try again! Coba lagi!',false)}
+  });
+}
+
+/* B: play / ride / tanpa kata kerja */
+function renderSort(q){
+  let sel=null,left=q.items.length;
+  view.innerHTML=header()+`<section class="plate">
+    <p class="prompt">Which word goes with it?</p>
+    <div class="pool" id="pool">${q.items.map((a,i)=>`<button class="chip" data-i="${i}">${a.e} ${a.n}</button>`).join('')}</div>
+    <div class="baskets">
+      <div class="basket" data-v="play"><h3>play …</h3><small>play football</small><div class="in"></div></div>
+      <div class="basket" data-v="ride"><h3>ride …</h3><small>ride a bike</small><div class="in"></div></div>
+      <div class="basket" data-v=""><h3>… 🚫</h3><small>tanpa play / ride: swim, read</small><div class="in"></div></div>
+    </div>
+    <p class="cheer" id="cheer" aria-live="polite">Tap a word, then tap a box.</p></section>`;
+  bindBack();
+  $$('.chip').forEach(c=>c.onclick=()=>{
+    if(c.classList.contains('ok'))return;sfx.tap();
+    $$('.chip').forEach(x=>x.classList.remove('sel'));sel=c;c.classList.add('sel');
+    speak(q.items[+c.dataset.i].n);$$('.basket').forEach(b=>b.classList.add('target'));
+  });
+  $$('.basket').forEach(bk=>bk.onclick=()=>{
+    if(!sel)return;const a=q.items[+sel.dataset.i];
+    $$('.basket').forEach(b=>b.classList.remove('target'));
+    if(a.v===bk.dataset.v){
+      sel.classList.remove('sel');sel.classList.add('ok');bk.querySelector('.in').appendChild(sel);sfx.good();
+      cheer(`${rnd(PRAISE)} “${base(a)}”`,true);speak(base(a));left--;S.steps++;setProg();
+      if(!left)later(()=>{S.qi=S.qs.length-1;S.steps=S.total-1;next()},1300);
+    }else{S.miss++;sfx.bad();sel.classList.remove('wrong');void sel.offsetWidth;sel.classList.add('wrong');sel.classList.remove('sel');
+      cheer(a.v?`Hmm… we say “${a.v} ${a.n}”.`:`“${a.n}” tidak pakai play / ride.`,false)}
+    sel=null;
+  });
+}
+
+/* D: chat */
+function renderChat(q){
+  view.innerHTML=header()+`<section class="plate">
+    <div class="chat">
+      <div class="msg"><span class="av">${q.fr}</span><div class="bub">${q.q}</div><button class="say" id="say" aria-label="Listen">🔊</button></div>
+      <div class="msg me"><div class="feel" title="Kamu">${q.a.e}<span>${q.feel?'😊':'☹️'}</span></div><span class="av">${ME}</span></div>
+      <div class="msg me hidden" id="mine"><div class="bub" id="mytxt"></div><span class="av">${ME}</span></div>
+    </div>
+    <p class="hint">Kamu ${q.feel?'suka 😊':'tidak suka ☹️'} ${q.a.e}. Pilih jawabanmu:</p>
+    ${optsHTML(q.options,true)}
+    <p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+  bindBack();
+  const plain=$('.bub').textContent;
+  $('#say').onclick=()=>speak(plain);later(()=>speak(plain),250);
+  $$('.opt').forEach(b=>b.onclick=()=>{
+    const v=q.options[+b.dataset.i];
+    if(v===q.answer){
+      b.classList.add('right');$$('.opt').forEach(x=>x.disabled=true);sfx.good();
+      $('#mytxt').innerHTML=v.replace('Me too','<span class="bl">Me too</span>');$('#mine').classList.remove('hidden');
+      cheer(rnd(PRAISE),true);speak(v);later(next,1900);
+    }else{b.classList.add('wrong');b.disabled=true;S.miss++;sfx.bad();
+      cheer(v.match(/like (play|ride|swim|draw|paint|read)\b/)?'Ingat: like + -ing (playing, riding…)':v.match(/it is|it isn't|they/)?'Itu jawaban untuk Is it / Are they.':'Try again! Lihat wajahmu 😊 / ☹️',false)}
+  });
+}
+
+/* E: Is it / Are they — dua langkah */
+function renderIsAre(q){
+  let step=1;
+  const draw=()=>{
+    view.innerHTML=header()+`<section class="plate">${q.pic}
+      <p class="prompt"><span>${step===1?q.q1:q.q2}</span><button class="say" id="say" aria-label="Listen">🔊</button></p>
+      ${step===1?optsHTML(['Is it','Are they']):optsHTML(['Yes, it is.',"No, it isn't.",'Yes, they are.',"No, they aren't."])}
+      <p class="tip">${step===1?'💡 1 benda → Is it … ? · banyak benda → Are they … ?':'💡 Lihat gambarnya: apakah benar itu bendanya?'}</p>
+      <p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+    bindBack();
+    $('#say').onclick=()=>speak(step===1?q.full1.replace(/^(Is it|Are they)/,'blank'):q.q2);
+    if(step===2)later(()=>speak(q.q2),250);
+    const ans=step===1?q.ans1:q.ans2;
+    $$('.opt').forEach(b=>b.onclick=()=>{
+      const v=b.textContent;
+      if(v===ans){
+        b.classList.add('right');$$('.opt').forEach(x=>x.disabled=true);sfx.good();
+        if(step===1){const bl=$('#blank');bl.textContent=ans;bl.classList.add('pop');speak(q.full1);cheer(rnd(PRAISE),true);later(()=>{step=2;draw()},1500)}
+        else{cheer(rnd(PRAISE),true);speak(v);later(next,1600)}
+      }else{b.classList.add('wrong');b.disabled=true;S.miss++;sfx.bad();
+        cheer(step===1?(q.ans1==='Is it'?'Hanya satu benda → Is it':'Bendanya banyak → Are they'):'Coba lagi! Satu → it, banyak → they.',false)}
+    });
+  };
+  draw();
+}
+
+/* F: cocokkan alat & kegiatan */
+function renderMatch(q){
+  const pics=shuffle(q.items),acts=shuffle(q.items);let sel=null;const done=new Set();
+  view.innerHTML=header()+`<section class="plate">
+    <div class="match"><div class="col">${pics.map(x=>`<button class="mcard pic" data-side="p" data-k="${x.act}" aria-label="${x.eq}">${x.e}</button>`).join('')}</div>
+    <div class="col">${acts.map(x=>`<button class="mcard" data-side="w" data-k="${x.act}">${x.act}</button>`).join('')}</div></div>
+    <p class="said" id="said"></p><p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+  bindBack();
+  const cards=$$('.mcard');
+  cards.forEach(b=>b.onclick=()=>{
+    if(done.has(b.dataset.k))return;
+    if(b.dataset.side==='w')speak(b.dataset.k);
+    if(!sel||sel.dataset.side===b.dataset.side){cards.forEach(x=>x.classList.remove('sel'));sel=b;b.classList.add('sel');sfx.tap();return}
+    const a=sel;sel=null;a.classList.remove('sel');
+    if(a.dataset.k===b.dataset.k){
+      done.add(b.dataset.k);[a,b].forEach(x=>{x.classList.add('done');x.disabled=true});sfx.good();
+      const it=q.items.find(x=>x.act===b.dataset.k),line=`I have ${it.eq}. I like ${it.act}.`;
+      $('#said').textContent='🗣️ '+line;speak(line);cheer(rnd(PRAISE),true);
+      S.steps=done.size;setProg();
+      if(done.size===q.items.length)later(()=>{S.qi=S.qs.length-1;S.steps=S.total-1;next()},2600);
+    }else{S.miss++;sfx.bad();[a,b].forEach(x=>{x.classList.remove('wrong');void x.offsetWidth;x.classList.add('wrong')});cheer('Try again! Coba lagi!',false)}
+  });
+}
+
+/* G: susun kalimat */
+function renderArrange(q){
+  const tiles=shuffle(q.words.map((w,id)=>({w,id})));let placed=[];
+  const join=a=>a.join(' ').replace(/ ([.?,])/g,'$1');
+  view.innerHTML=header()+`<section class="plate">
+    <p class="prompt">Make a sentence! <button class="say" id="say" aria-label="Listen">🔊</button></p>
+    <div class="line" id="line"></div><div class="bank" id="bank"></div>
+    <div class="actions"><button class="btn ghost" id="reset">↺ Reset</button><button class="btn" id="check" disabled>Check ✓</button></div>
+    <p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+  bindBack();
+  $('#say').onclick=()=>speak(join(q.words),.75);
+  const line=$('#line'),bank=$('#bank'),check=$('#check');
+  function draw(){
+    line.className='line';
+    line.innerHTML=placed.map(t=>`<button class="tile" data-id="${t.id}">${t.w}</button>`).join('')||'<span class="hint">Tap the words below · Ketuk kata di bawah</span>';
+    bank.innerHTML=tiles.filter(t=>!placed.includes(t)).map(t=>`<button class="tile" data-id="${t.id}">${t.w}</button>`).join('');
+    check.disabled=placed.length!==tiles.length;
+    line.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{sfx.tap();placed=placed.filter(t=>t.id!=b.dataset.id);draw()});
+    bank.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{sfx.tap();if(/[a-z]/i.test(b.textContent))speak(b.textContent);placed.push(tiles.find(t=>t.id==b.dataset.id));draw()});
+  }
+  draw();
+  $('#reset').onclick=()=>{placed=[];draw()};
+  check.onclick=()=>{
+    const s=join(placed.map(t=>t.w)),ans=join(q.words);
+    if(s===ans){line.className='line good';sfx.good();cheer(rnd(PRAISE),true);check.disabled=true;$('#reset').disabled=true;
+      line.querySelectorAll('.tile').forEach(b=>b.disabled=true);speak(ans);later(next,2000)}
+    else{S.miss++;sfx.bad();line.className='line bad';cheer('Not yet. Huruf besar di awal, tanda baca di akhir!',false)}
+  };
+}
+
+/* H: susun bunyi */
+function renderBuild(q){
+  const [b1,v1,e1,b2,v2,e2]=q.b,word=b1+v1+e1;
+  const cols=[shuffle([b1,b2]),shuffle([v1,v2]),shuffle([e1,e2])],pick=[null,null,null];
+  view.innerHTML=header()+`<section class="plate">
+    <button class="bigsay" id="hear">🔊 Listen</button>
+    <p class="prompt">Build the word you hear.</p>
+    <div class="cols">${cols.map((c,ci)=>`<div class="pcol">${c.map(x=>`<button class="ball" data-c="${ci}" data-v="${x}" style="background:${BALL[ci]}">${x}</button>`).join('')}</div>${ci<2?'<span class="arrow">→</span>':''}`).join('')}</div>
+    <div class="word" id="word"></div>
+    <div class="actions"><button class="btn" id="check" disabled>Check ✓</button></div>
+    <p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+  bindBack();
+  $('#hear').onclick=()=>speak(word,.7);later(()=>speak(word,.7),300);
+  const upd=()=>{$('#word').textContent=pick.map(p=>p||'_').join(' ');$('#check').disabled=pick.includes(null)};upd();
+  $$('.ball').forEach(b=>b.onclick=()=>{
+    sfx.tap();const c=+b.dataset.c;pick[c]=b.dataset.v;
+    $$(`.ball[data-c="${c}"]`).forEach(x=>x.classList.toggle('sel',x===b));upd();
+  });
+  $('#check').onclick=()=>{
+    const w=pick.join('');
+    if(w===word){sfx.good();$('#word').textContent=word;$('#word').classList.add('pop');cheer(`${rnd(PRAISE)} ${b1} + ${v1} + ${e1} = ${word}`,true);speak(word,.7);$$('.ball').forEach(x=>x.disabled=true);$('#check').disabled=true;later(next,1900)}
+    else{S.miss++;sfx.bad();cheer('Listen again! Dengarkan lagi bunyi awalnya.',false);speak(word,.6)}
+  };
+}
+
+/* ---------- hasil ---------- */
+function finish(){
+  const many=['B','F'].includes(S.L.k),lim=many?[2,5]:[1,3];
+  const st=S.miss<=lim[0]?3:S.miss<=lim[1]?2:1;
+  STARS[S.i]=Math.max(STARS[S.i],st);saveStars();
+  const i=S.i,nextI=(i+1)%LEVELS.length;
+  view.innerHTML=`<section class="plate result">
+    <div class="big-stars">${[0,1,2].map(k=>`<span class="${k<st?'on':''}" style="animation-delay:${k*.18}s">★</span>`).join('')}</div>
+    <h2>${st===3?'Champion!':st===2?'Nice work!':'Good try!'}</h2>
+    <p>Game ${S.L.k} · ${S.L.t} — ${S.miss===0?'no mistakes':S.miss+' mistake'+(S.miss>1?'s':'')}</p>
+    <div class="actions"><button class="btn ghost" id="again">↺ Play again</button>
+    <button class="btn" id="nxt">Next: ${LEVELS[nextI].t} →</button>
+    <button class="btn red" id="menu">Menu</button></div></section>`;
+  sfx.win();confetti();
+  $('#again').onclick=()=>start(i);$('#nxt').onclick=()=>start(nextI);$('#menu').onclick=renderMap;
+}
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const cv=$('#fx'),cx=cv.getContext('2d');cv.width=innerWidth;cv.height=innerHeight;
+  const E=['⚽','🏀','🏸','🎾','⭐','🏓','🛹'];
+  const P=Array.from({length:44},()=>({x:Math.random()*cv.width,y:-30-Math.random()*cv.height*.5,v:2+Math.random()*3.5,r:Math.random()*6,s:18+Math.random()*16,e:rnd(E),w:Math.random()*.1-.05}));
+  let t=0;(function f(){cx.clearRect(0,0,cv.width,cv.height);
+    P.forEach(p=>{p.y+=p.v;p.r+=p.w;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.font=p.s+'px serif';cx.fillText(p.e,0,0);cx.restore()});
+    if(++t<170)requestAnimationFrame(f);else cx.clearRect(0,0,cv.width,cv.height)})();
+}
+
+$('#brand').onclick=renderMap;
+saveStars();renderMap();
+</script>
+</body>
+</html>
