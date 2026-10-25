@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petualangan Pantang Menyerah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@700;800&display=swap">
+<style>
+/* Tema buku tulis bergaris + lencana. Satu permainan = satu "lencana" di peta. */
+:root{
+  --paper:#fffaf0; --rule:#f1e3c8; --card:#fff; --ink:#2a2f45; --soft:#66708a; --line:#eadfca;
+  --orange:#f08a24; --orange-d:#c06a12; --red:#e2504c; --teal:#1f9e8f; --blue:#3b82d6; --purple:#8a55c9; --green:#3e9b4f; --pink:#e04b8c;
+  --good:#2f9e57; --good-bg:#ddf5e5; --bad:#d63a2f; --bad-bg:#fce1de; --sun:#ffc23d;
+  --display:"Baloo 2","Arial Rounded MT Bold","Trebuchet MS",sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:var(--paper);background-image:repeating-linear-gradient(transparent 0 31px,var(--rule) 31px 33px)}
+body{margin:0;color:var(--ink);font-family:var(--body);font-size:16px;padding:12px 14px 40px}
+.wrap{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.hidden{display:none!important}
+
+.bar{display:flex;align-items:center;gap:10px}
+.home{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--card);text-decoration:none;font-size:22px;box-shadow:0 3px 0 var(--line);flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0;background:none;border:0;padding:0;text-align:left}
+.brand .logo{width:46px;height:46px;border-radius:14px;background:var(--orange);display:grid;place-items:center;font-size:26px;box-shadow:0 4px 0 var(--orange-d);flex-shrink:0}
+.brand h1{font-family:var(--display);font-weight:800;font-size:1.45rem;line-height:1;margin:0}
+.brand small{display:block;font-weight:700;color:var(--soft);font-size:.8rem;margin-top:3px}
+.pill{display:flex;align-items:center;gap:6px;background:var(--card);border-radius:999px;padding:6px 12px;font-weight:800;box-shadow:0 3px 0 var(--line);white-space:nowrap;font-variant-numeric:tabular-nums}
+.icon-btn{border:0;background:var(--card);width:42px;height:42px;border-radius:50%;font-size:20px;box-shadow:0 3px 0 var(--line);flex-shrink:0}
+
+.hello{background:var(--card);border-radius:22px;padding:16px 18px;display:flex;gap:14px;align-items:center;box-shadow:0 6px 0 var(--line)}
+.hello .kids{font-size:46px;line-height:1;flex-shrink:0}
+.hello h2{font-family:var(--display);font-size:1.4rem;margin:0;line-height:1.15;text-wrap:balance}
+.hello p{margin:4px 0 0;color:var(--soft);font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.cell{border:0;background:var(--card);border-radius:18px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;box-shadow:0 5px 0 var(--line);transition:transform .15s}
+.cell:hover{transform:translateY(-3px)}
+.cell .tag{align-self:flex-start;font-family:var(--display);font-weight:800;color:#fff;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-size:1rem;line-height:1}
+.cell .ic{font-size:40px;line-height:1.1;margin-top:-6px}
+.cell b{font-family:var(--display);font-size:1.05rem;line-height:1.1}
+.cell span.id{font-size:.76rem;color:var(--soft);font-weight:700;line-height:1.2}
+.stars{letter-spacing:2px;font-size:1rem;color:#dcd6ca}
+.stars .on{color:var(--sun)}
+.hint{font-size:.88rem;color:var(--soft);font-weight:700;text-align:center;margin:0}
+
+.head{display:flex;align-items:center;gap:10px}
+.back{border:0;background:var(--card);border-radius:12px;padding:8px 12px;font-weight:800;box-shadow:0 3px 0 var(--line);flex-shrink:0}
+.head .tag{font-family:var(--display);font-weight:800;color:#fff;min-width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:1.3rem;flex-shrink:0}
+.head h2{font-family:var(--display);font-size:1.3rem;margin:0;line-height:1.1}
+.head p{margin:2px 0 0;font-size:.86rem;color:var(--soft);font-weight:700;line-height:1.3}
+.head .t{flex:1;min-width:0}
+.progress{height:12px;background:var(--card);border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--orange);border-radius:99px;transition:width .35s}
+.plate{background:var(--card);border-radius:24px;padding:20px 16px;box-shadow:0 7px 0 var(--line);display:flex;flex-direction:column;align-items:center;gap:16px}
+.big{font-size:84px;line-height:1}
+.prompt{font-family:var(--display);font-weight:600;font-size:1.35rem;text-align:center;line-height:1.35;margin:0;text-wrap:balance}
+.prompt b{color:var(--orange-d)}
+.sentence{font-family:var(--display);font-weight:800;font-size:1.45rem;text-align:center;line-height:1.35;background:#fff5e3;border-radius:16px;padding:12px 16px;margin:0;width:100%;max-width:560px}
+.blank{display:inline-block;min-width:60px;border-bottom:4px dashed var(--sun);color:var(--teal);text-align:center}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:560px}
+.opts.one{grid-template-columns:1fr}
+.opt{border:3px solid #ebe5d8;background:var(--card);border-radius:16px;padding:13px 12px;font-weight:800;font-size:1.1rem;box-shadow:0 4px 0 #ebe5d8;min-width:0;line-height:1.3}
+.opts.one .opt{text-align:left;font-size:1.02rem;padding:12px 16px}
+.opt.big2{font-family:var(--display);font-size:1.9rem;padding:8px}
+.opt:hover:not(:disabled){border-color:var(--blue)}
+.opt.right{background:var(--good-bg);border-color:var(--good);box-shadow:0 4px 0 var(--good);color:#1e6b3a}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad);box-shadow:0 4px 0 var(--bad);color:#9b2a22;animation:shake .35s}
+.opt:disabled{cursor:default}
+.cheer{min-height:1.5em;font-family:var(--display);font-weight:800;font-size:1.12rem;color:var(--good);margin:0;text-align:center;line-height:1.35}
+.cheer.oops{color:var(--bad)}
+.tip{font-size:.92rem;color:#7a5410;font-weight:800;text-align:center;margin:0;background:#fff3d6;border-radius:12px;padding:8px 12px;line-height:1.4}
+@keyframes shake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .4s ease-out}
+
+/* hiperbola benar/salah */
+.tf{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:520px}
+.tfb{border:0;border-radius:18px;padding:16px 8px;font-family:var(--display);font-weight:800;font-size:1.3rem;color:#fff;line-height:1.15}
+.tfb small{display:block;font-family:var(--body);font-size:.8rem;opacity:.9}
+.tfb.yes{background:var(--pink);box-shadow:0 5px 0 #a8326a}
+.tfb.no{background:var(--teal);box-shadow:0 5px 0 #157066}
+.tfb:disabled{opacity:.5}
+mark{background:#ffe08a;border-radius:6px;padding:0 3px}
+
+/* komputer */
+.pc{width:100%;max-width:420px}
+.pc .part{cursor:pointer;transition:filter .15s}
+.pc .part:hover{filter:drop-shadow(0 0 4px #3b82d6)}
+.pc .part.hl{filter:drop-shadow(0 0 6px #ffc23d) drop-shadow(0 0 4px #ffc23d)}
+.pc .part.ok{filter:drop-shadow(0 0 6px #2f9e57) drop-shadow(0 0 4px #2f9e57)}
+.pc .part.no{animation:shake .35s}
+.lbl{font-family:var(--display);font-weight:800;font-size:13px;fill:#2a2f45}
+
+/* jodohkan */
+.match{display:grid;grid-template-columns:1fr 1.6fr;gap:10px 14px;width:100%;max-width:600px}
+.col{display:flex;flex-direction:column;gap:10px}
+.mcard{border:3px solid #ebe5d8;background:var(--card);border-radius:14px;min-height:60px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.98rem;box-shadow:0 4px 0 #ebe5d8;padding:6px 10px;line-height:1.25;text-align:center}
+.mcard.word{font-family:var(--display);font-size:1.15rem;color:var(--orange-d)}
+.mcard.sel{border-color:var(--blue);box-shadow:0 4px 0 var(--blue);transform:translateY(-2px)}
+.mcard.done{background:var(--good-bg);border-color:var(--good);box-shadow:0 4px 0 var(--good);color:#1e6b3a;cursor:default}
+.mcard.wrong{animation:shake .35s;border-color:var(--bad)}
+
+/* bacaan */
+.story{width:100%;max-width:600px;background:#fff5e3;border-radius:18px;padding:14px 16px;border-left:6px solid var(--orange)}
+.story summary{font-family:var(--display);font-weight:800;font-size:1.15rem;cursor:pointer;color:var(--orange-d);display:flex;align-items:center;gap:8px;justify-content:space-between}
+.story p{margin:8px 0 0;line-height:1.7;font-weight:700;font-size:1.05rem}
+.readbtn{border:0;background:var(--blue);color:#fff;border-radius:999px;padding:5px 12px;font-weight:800;font-size:.85rem;box-shadow:0 3px 0 #2a62a8;flex-shrink:0}
+
+/* susun cerita */
+.slots{display:flex;flex-direction:column;gap:10px;width:100%;max-width:600px}
+.slot{display:grid;grid-template-columns:76px 1fr;gap:10px;align-items:stretch}
+.slot .k{border-radius:14px;color:#fff;font-family:var(--display);font-weight:800;display:grid;place-items:center;font-size:1.05rem}
+.slot .v{border:3px dashed #e3d6bd;border-radius:14px;min-height:62px;padding:10px 12px;font-weight:800;line-height:1.4;background:#fffdf8;display:flex;align-items:center}
+.slot .v.filled{border-style:solid;border-color:#c9b896;background:#fff;cursor:pointer}
+.slot .v.good{border-color:var(--good);background:var(--good-bg)}
+.slot .v.bad{border-color:var(--bad);background:var(--bad-bg);animation:shake .35s}
+.cards{display:flex;flex-direction:column;gap:10px;width:100%;max-width:600px}
+.scard{border:0;background:var(--sun);color:#4a3500;border-radius:14px;padding:12px 14px;font-weight:800;text-align:left;line-height:1.4;box-shadow:0 4px 0 #c9921a}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{border:0;border-radius:14px;padding:12px 22px;font-weight:800;font-size:1.05rem;background:var(--orange);color:#fff;box-shadow:0 4px 0 var(--orange-d)}
+.btn.ghost{background:#f2eee6;color:var(--ink);box-shadow:0 4px 0 #ddd5c4}
+.btn.teal{background:var(--teal);box-shadow:0 4px 0 #157066}
+.btn:disabled{opacity:.45;cursor:default}
+
+.result{text-align:center}
+.result .big-stars{font-size:62px;letter-spacing:6px;color:#dcd6ca}
+.result .big-stars .on{color:var(--sun);display:inline-block;animation:pop .5s both}
+.result h2{font-family:var(--display);font-size:2rem;margin:0}
+.result p{margin:0;color:var(--soft);font-weight:700}
+canvas#fx{position:fixed;inset:0;pointer-events:none;width:100%;height:100%;z-index:5}
+
+@media (max-width:640px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .prompt{font-size:1.18rem}.sentence{font-size:1.22rem}
+  .brand h1{font-size:1.15rem}.brand .long{display:none}.brand small{display:none}.pill{padding:6px 9px}
+  .match{grid-template-columns:1fr 1.5fr}.mcard{font-size:.88rem}.mcard.word{font-size:1rem}
+  .slot{grid-template-columns:64px 1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <a class="home" href="index.html" title="Kembali ke semua game" aria-label="Kembali ke semua game">🏠</a>
+    <button class="brand" id="brand" aria-label="Kembali ke peta permainan">
+      <span class="logo">💪</span>
+      <span><h1><span class="long">Petualangan </span>Pantang Menyerah</h1><small>Bahasa Indonesia Kelas 3 · Bab 3</small></span>
+    </button>
+    <span class="pill" title="Jumlah bintang">⭐ <span id="total">0</span>/24</span>
+    <button class="icon-btn" id="mute" aria-label="Suara">🔊</button>
+  </div>
+  <main id="view" class="wrap"></main>
+</div>
+<canvas id="fx"></canvas>
+
+<script>
+/* =================== MATERI =================== */
+const MAGIC=[
+  ['🦶','Kamu tidak sengaja menginjak kaki temanmu.','Maaf'],
+  ['📚','Kamu ingin Kakak mengambilkan buku di rak yang tinggi.','Tolong'],
+  ['🎁','Nenek memberimu hadiah ulang tahun.','Terima kasih'],
+  ['⏰','Kamu datang terlambat ke sekolah karena jalan sangat macet.','Maaf'],
+  ['✏️','Temanmu meminjamkan pensilnya kepadamu.','Terima kasih'],
+  ['📦','Kotak yang kamu bawa sangat berat. Kamu ingin teman membantumu.','Tolong'],
+  ['🥤','Kamu menumpahkan minuman di meja temanmu.','Maaf'],
+  ['🧭','Pak Satpam menunjukkan jalan ke perpustakaan.','Terima kasih'],
+  ['🚪','Kamu ingin Adik menutup pintu.','Tolong'],
+  ['⚽','Bola yang kamu tendang mengenai jendela tetangga.','Maaf'],
+  ['🍲','Ibu memasakkan sup ayam kesukaanmu.','Terima kasih'],
+  ['🖍️','Kamu ingin teman meminjamkan krayon merahnya.','Tolong']
+];
+const MAGIC_FILL=[
+  ['“___, biar aku membantu membawa sebagian bukumu,” kata Sinta.','Tolong','Sinta menawarkan bantuan.'],
+  ['“___, Dito. Aku tidak sengaja,” kata Raka.','Maaf','Raka menyenggol kotak pensil Dito.'],
+  ['“___, Sinta,” jawab Raka sambil tersenyum.','Terima kasih','Sinta sudah membantu Raka.'],
+  ['___ aku datang terlambat karena jalan sangat macet.','Maaf','Datang terlambat adalah kesalahan.']
+];
+const PC_TAP=[
+  ['Ketuk alat untuk <b>melihat gambar dan tulisan</b>.','monitor'],
+  ['Ketuk alat untuk <b>mengetik huruf, angka, dan simbol</b>.','kibor'],
+  ['Ketuk alat untuk <b>menggerakkan penunjuk</b> pada layar.','tetikus'],
+  ['Ketuk alat yang <b>mengeluarkan suara</b>.','pengeras'],
+  ['Ketuk <b>seperangkat tombol</b> untuk mengoperasikan komputer.','kibor'],
+  ['Intan membaca artikel yang terpampang di sini. Ketuk alatnya!','monitor']
+];
+const PC_MC=[
+  ['Aplikasi untuk membuka dan menjelajahi internet disebut ….','peramban',['peramban','monitor','tetikus','pengeras suara']],
+  ['Jaringan yang menghubungkan komputer untuk bertukar informasi disebut ….','internet',['internet','kibor','peramban','monitor']],
+  ['Naya menggunakan kibor untuk ….','mengetik judul tugas',['mengetik judul tugas','melihat gambar','menggerakkan penunjuk','mendengarkan lagu']],
+  ['Monitor adalah alat untuk ….','menampilkan gambar dan tulisan',['menampilkan gambar dan tulisan','merekam suara','mengetik perintah','mencetak buku']]
+];
+const PCNAME={monitor:'monitor',kibor:'kibor',tetikus:'tetikus',pengeras:'pengeras suara'};
+const HYPER=[
+  ['Suara petir itu menggelegar <mark>membelah langit</mark>.',1],
+  ['Air matanya mengalir <mark>seperti sungai</mark>.',1],
+  ['Tas itu beratnya <mark>seribu kilogram</mark>.',1],
+  ['Suaranya terdengar <mark>sampai ke ujung dunia</mark>.',1],
+  ['Tuntutlah ilmu <mark>setinggi langit</mark>.',1],
+  ['Pujian Pak Guru membuat Fahri <mark>melayang di udara</mark>.',1],
+  ['Bulunya <mark>lebih lembut daripada sutra</mark>.',1],
+  ['Tubuh Dimas <mark>tinggal tulang dibalut kulit</mark>.',1],
+  ['Bentakan Ayah terdengar <mark>menggemparkan seisi bangunan</mark>.',1],
+  ['Gibran <mark>memeras otak</mark> untuk menjawab seluruh soal ujian.',1],
+  ['Tubuh Kak Bayu <mark>setinggi rumah</mark>.',1],
+  ['Dio berlari <mark>secepat kilat</mark> menuju sekolah.',1],
+  ['Lala sangat lapar hingga <mark>sanggup memakan seekor gajah</mark>.',1],
+  ['Beni berjalan ke sekolah.',0],['Ibu membeli sayur di pasar.',0],['Adik minum segelas susu.',0],
+  ['Kakak membaca buku di kamar.',0],['Kicau burung terdengar menenangkan hati.',0],
+  ['Malam telah tiba dan gelap pun menggantikan terang.',0],['Dio sangat rajin dan cerdas.',0],
+  ['Bayu bermain sepak bola bersama teman-temannya.',0],['Kucing yang dicari berwarna putih.',0],
+  ['Gibran memberi makan kelincinya setiap hari.',0],['Naya mengetik judul tugas dengan kibor.',0]
+];
+const MEANING=[
+  ['Tubuh Kak Bayu setinggi rumah.','Kak Bayu bertubuh sangat tinggi.',['Kak Bayu benar-benar setinggi rumah.','Kak Bayu tinggal di rumah tinggi.','Kak Bayu memanjat rumah.']],
+  ['Sinar matahari membakar kulit Gibran.','Matahari bersinar sangat terik dan panas.',['Kulit Gibran terbakar api.','Gibran bermain api.','Matahari sedang terbenam.']],
+  ['Dio berlari secepat kilat menuju sekolah.','Dio berlari sangat cepat.',['Dio berubah menjadi kilat.','Dio takut melihat kilat.','Dio berjalan pelan-pelan.']],
+  ['Lala sangat lapar hingga sanggup memakan seekor gajah.','Lala sangat lapar.',['Lala benar-benar memakan gajah.','Lala memberi makan gajah.','Lala melihat gajah di kebun binatang.']],
+  ['Air mata Santi mengalir deras karena mendapat nilai buruk.','Santi menangis tersedu-sedu karena sangat sedih.',['Ada sungai di mata Santi.','Santi sedang mandi.','Santi tertawa gembira.']],
+  ['Pujian Pak Guru membuat Fahri melayang di udara.','Fahri merasa sangat senang.',['Fahri bisa terbang.','Fahri naik pesawat.','Fahri jatuh dari kursi.']],
+  ['Gibran memeras otak untuk menjawab soal ujian.','Gibran berpikir dengan sangat keras.',['Gibran memeras jeruk.','Kepala Gibran sakit.','Gibran tidak mau berpikir.']],
+  ['Tubuh Dimas tinggal tulang dibalut kulit.','Dimas sangat kurus.',['Dimas tidak punya daging sama sekali.','Dimas memakai baju kulit.','Dimas sangat gemuk.']],
+  ['Suaranya terdengar sampai ke ujung dunia.','Suaranya sangat keras.',['Ia pergi ke ujung dunia.','Suaranya sangat pelan.','Ia sedang menelepon.']],
+  ['Tuntutlah ilmu setinggi langit.','Belajarlah sebanyak-banyaknya dan raih cita-cita yang tinggi.',['Belajarlah di atas langit.','Naiklah pesawat untuk belajar.','Ilmu ada di awan.']]
+];
+const VOCAB=[
+  ['Danu <b>gagal</b> dalam lomba cerdas cermat. Arti kata <b>gagal</b> adalah ….','tidak berhasil',['tidak berhasil','tidak maju','tidak berlomba','tidak tepat waktu']],
+  ['Gibran mencoba <b>teknik</b> lain agar berhasil. Arti kata <b>teknik</b> adalah ….','cara',['cara','ide','proses','langkah']],
+  ['Orang yang <b>pantang menyerah</b> artinya ….','tidak mudah putus asa',['tidak mudah putus asa','mudah marah','suka bermain','cepat bosan']],
+  ['Majas hiperbola adalah ungkapan yang ….','melebih-lebihkan sesuatu agar lebih kuat dan menarik',['melebih-lebihkan sesuatu agar lebih kuat dan menarik','menanyakan nama seseorang','menuliskan alamat rumah','menyebutkan waktu']]
+];
+const PUNCT=[
+  ['Siapa nama gurumu','?','Kalimat tanya diakhiri tanda tanya (?).'],
+  ['Tolong rapikan meja itu','!','Kalimat perintah diakhiri tanda seru (!).'],
+  ['Aku tidak sengaja','.','Kalimat berita diakhiri tanda titik (.).'],
+  ['Di mana tas barumu','?','Kalimat tanya diakhiri tanda tanya (?).'],
+  ['Ayo, jangan menyerah','!','Kalimat ajakan yang bersemangat diakhiri tanda seru (!).'],
+  ['Gibran memberi makan kelinci setiap hari','.','Kalimat berita diakhiri tanda titik (.).'],
+  ['Apakah kamu sudah belajar','?','Kalimat tanya diakhiri tanda tanya (?).'],
+  ['Jangan buang sampah sembarangan','!','Kalimat larangan diakhiri tanda seru (!).'],
+  ['Kak Bayu sedang sakit','.','Kalimat berita diakhiri tanda titik (.).'],
+  ['Wah, indah sekali pelangi itu','!','Kalimat seruan diakhiri tanda seru (!).']
+];
+const WRITE=[
+  [['Saya pergi ke Bandung pada bulan Juni.','saya pergi ke bandung pada bulan juni.','Saya pergi ke bandung pada Bulan juni.','saya pergi ke Bandung pada bulan juni.'],'Huruf kapital untuk awal kalimat, nama kota, dan nama bulan.'],
+  [['Ibu berkata, “Tolong tutup pintu.”','Ibu berkata, “tolong tutup pintu.”','ibu berkata, “Tolong tutup pintu.”','Ibu berkata “tolong tutup pintu”.'],'Kalimat langsung diapit tanda petik dan diawali huruf kapital.'],
+  [['Raka berkata, “Maaf, Dito.”','raka berkata, “maaf, dito.”','Raka berkata, “maaf, Dito.”','Raka berkata “Maaf, Dito”.'],'Nama orang dan awal kalimat langsung memakai huruf kapital.'],
+  [['Pada hari Sabtu, Gibran pergi ke Jakarta.','pada hari sabtu, Gibran pergi ke jakarta.','Pada hari sabtu, gibran pergi ke Jakarta.','Pada Hari Sabtu, Gibran pergi ke jakarta.'],'Nama hari, nama orang, dan nama kota memakai huruf kapital.'],
+  [['Sinta bertanya, “Apakah kamu lelah?”','Sinta bertanya, “apakah kamu lelah.”','sinta bertanya, “Apakah kamu lelah?”','Sinta bertanya “apakah kamu lelah”?'],'Pertanyaan di dalam kalimat langsung memakai tanda tanya sebelum tanda petik penutup.']
+];
+const MATCHES=[
+  ['Maaf','Digunakan ketika melakukan kesalahan.'],['Tolong','Digunakan ketika meminta bantuan.'],
+  ['Terima kasih','Untuk menghargai bantuan atau kebaikan orang lain.'],['Monitor','Layar komputer yang menampilkan gambar atau tulisan.'],
+  ['Tetikus','Alat untuk menggerakkan penunjuk pada layar.'],['Kibor','Alat untuk mengetik huruf, angka, dan simbol.'],
+  ['Internet','Jaringan yang menghubungkan komputer untuk bertukar informasi.'],['Peramban','Aplikasi untuk membuka dan menjelajahi internet.'],
+  ['Majas hiperbola','Ungkapan yang melebih-lebihkan sesuatu.'],['Tanda tanya (?)','Digunakan untuk menanyakan sesuatu.']
+];
+const READS=[
+  {t:'Membantu di Perpustakaan',p:'Pada hari Sabtu, Raka dan Sinta membantu Ibu Guru merapikan perpustakaan kelas. Raka membawa tumpukan buku yang cukup berat. Sinta melihat Raka kesulitan lalu berkata, “Tolong, biar aku membantu membawa sebagian bukumu.” Raka tersenyum dan menjawab, “Terima kasih, Sinta.” Saat berjalan, Raka tidak sengaja menyenggol kotak pensil milik Dito hingga jatuh. Raka segera berkata, “Maaf, Dito. Aku tidak sengaja.” Setelah semua buku tersusun rapi, mereka kembali belajar bersama.',
+   q:[['Kata ajaib yang digunakan Sinta ketika menawarkan bantuan adalah ….','tolong',['maaf','tolong','terima kasih','selamat']],
+      ['Raka mengucapkan “Terima kasih” karena ….','Sinta membantu membawa buku',['Sinta meminta maaf kepadanya','Sinta membantu membawa buku','Dito menjatuhkan kotak pensil','Ibu Guru memberi tugas']],
+      ['Mengapa Raka mengucapkan “Maaf” kepada Dito?','Raka tidak sengaja menyenggol kotak pensil Dito',['Raka tidak sengaja menyenggol kotak pensil Dito','Raka tidak mau membantu','Raka pulang lebih dahulu','Raka mengambil buku Dito']],
+      ['Sikap baik yang terlihat dalam bacaan adalah ….','saling membantu',['saling mengejek','saling membantu','berebut buku','meninggalkan tugas']]]},
+  {t:'Belajar Komputer',p:'Pada pelajaran komputer, Naya duduk di depan komputer. Ia melihat gambar pada monitor. Untuk mengetik judul tugas, Naya menggunakan kibor. Ia menggerakkan penunjuk pada layar menggunakan tetikus. Setelah itu, Naya membuka peramban untuk mencari informasi tentang hewan. Komputer dapat terhubung ke berbagai informasi melalui internet.',
+   q:[['Alat yang digunakan Naya untuk melihat gambar adalah ….','monitor',['tetikus','kibor','monitor','peramban']],
+      ['Alat untuk menggerakkan penunjuk pada layar disebut ….','tetikus',['internet','monitor','tetikus','kibor']],
+      ['Naya membuka peramban untuk ….','mencari informasi tentang hewan',['mencari informasi tentang hewan','mengetik judul tugas','mematikan komputer','mencetak gambar']],
+      ['Internet pada bacaan berguna untuk ….','menghubungkan komputer dengan berbagai informasi',['mematikan komputer','menghubungkan komputer dengan berbagai informasi','mencetak buku','menulis di papan tulis']]]},
+  {t:'Kelinci Gibran',p:'Gibran mempunyai tiga ekor kelinci jantan dan dua ekor kelinci betina. Gibran merawat semua kelincinya dengan baik. Setiap hari, Gibran memberi makan kelinci. Makanan kesukaan kelinci-kelinci Gibran adalah sayuran. Gibran tak lupa membersihkan kandang kelincinya agar tak mudah terserang penyakit.',
+   q:[['Tokoh dalam bacaan di atas adalah ….','Gibran',['Gibran','kelinci','sayuran','penyakit']],
+      ['Berapa jumlah semua kelinci Gibran?','lima ekor',['tiga ekor','dua ekor','lima ekor','enam ekor']],
+      ['Makanan kesukaan kelinci Gibran adalah ….','sayuran',['daging','sayuran','roti','ikan']],
+      ['Mengapa Gibran membersihkan kandang kelinci?','agar kelinci tidak mudah terserang penyakit',['agar kelinci tidak mudah terserang penyakit','agar kelinci cepat besar','karena disuruh teman','supaya kandangnya baru']]]},
+  {t:'Kini, Aku yang Akan Menolongmu',p:'Kak Bayu agak kaget melihat kedatangan mereka. “Sekarang giliran Gibran untuk menolong Kakak!” ucap Gibran. Gibran membawakan sup ayam buatan Ibu. Gibran dan teman-temannya juga membantu merapikan rumah Kak Bayu. Kak Bayu tersenyum melihat ketulusan Gibran dan teman-temannya.',
+   q:[['Percakapan antara Gibran dan Kak Bayu terjadi di ….','depan rumah',['rumah sakit','dalam pasar','depan rumah']],
+      ['Apa yang dialami Kak Bayu?','Kak Bayu sedang sakit',['Kak Bayu sedang sakit','Kak Bayu sedang berulang tahun','Kak Bayu baru pindah rumah','Kak Bayu sedang bermain']],
+      ['Bagaimana perasaan Kak Bayu?','senang dan terharu',['senang dan terharu','marah','takut','bosan']],
+      ['Apa yang dibawakan Gibran untuk Kak Bayu?','sup ayam buatan Ibu',['sup ayam buatan Ibu','buah-buahan','obat dari dokter','kue ulang tahun']]]}
+];
+const STORIES=[
+  {t:'Gibran Ingin Juara',p:['Gibran ingin menjadi juara kelas.','Walau berkali-kali gagal, Gibran tetap semangat belajar setiap hari.','Saat pembagian rapor, Gibran berhasil mendapat predikat yang diinginkannya.']},
+  {t:'Kucing Inda Hilang',p:['Anak kucing putih milik Inda hilang.','Inda mencarinya dari satu kebun ke kebun lainnya.','Akhirnya, Inda menemukan kucingnya tidur di bawah pohon.']},
+  {t:'Danu Tidak Menyerah',p:['Danu gagal dalam lomba cerdas cermat.','Danu tidak menyerah. Ia belajar lebih giat dengan teknik belajar yang baru.','Tahun berikutnya, Danu berhasil menjadi juara lomba.']},
+  {t:'Merapikan Perpustakaan',p:['Pada hari Sabtu, Raka dan Sinta membantu Ibu Guru di perpustakaan.','Raka kesulitan membawa buku yang berat, lalu Sinta membantunya.','Setelah semua buku tersusun rapi, mereka kembali belajar bersama.']},
+  {t:'Menolong Kak Bayu',p:['Dulu, Kak Bayu pernah menolong Gibran.','Suatu hari, Gibran mendengar Kak Bayu jatuh sakit.','Gibran dan teman-temannya datang membawa sup ayam dan merapikan rumah Kak Bayu.']},
+  {t:'Lala Belajar Bersepeda',p:['Lala ingin sekali bisa naik sepeda.','Ia beberapa kali terjatuh, tetapi terus mencoba.','Akhirnya, Lala bisa bersepeda keliling kompleks dengan gembira.']}
+];
+const PARTCOL=['#3b82d6','#f08a24','#3e9b4f'];
+
+/* =================== ALAT BANTU =================== */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const view=$('#view');
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const sample=(a,n)=>shuffle(a).slice(0,n);
+const PRAISE=['Hebat!','Pintar!','Betul sekali!','Mantap!','Keren!','Luar biasa!'];
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let timers=[];const later=(f,ms)=>{timers.push(setTimeout(f,ms))};
+function clearTimers(){timers.forEach(clearTimeout);timers=[];if('speechSynthesis' in window)speechSynthesis.cancel()}
+const strip=h=>h.replace(/<[^>]+>/g,'');
+
+/* suara */
+let muted=!!LS.get('pm-muted',false),actx=null;
+function tone(f,d,t='sine',when=0,vol=.18){
+  if(muted)return;
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    const o=actx.createOscillator(),g=actx.createGain();o.type=t;o.frequency.value=f;
+    const s=actx.currentTime+when;g.gain.setValueAtTime(vol,s);g.gain.exponentialRampToValueAtTime(.001,s+d);
+    o.connect(g).connect(actx.destination);o.start(s);o.stop(s+d)}catch(e){}
+}
+const sfx={good(){tone(660,.15,'triangle');tone(990,.22,'triangle',.11)},bad(){tone(180,.25,'square',0,.08)},
+  win(){[523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',i*.12))},tap(){tone(440,.06,'sine',0,.08)}};
+function read(t){
+  if(muted||!('speechSynthesis' in window))return;
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(strip(t).replace(/___/g,'titik-titik'));u.lang='id-ID';u.rate=.9;
+    const v=speechSynthesis.getVoices().find(v=>/^id[-_]/i.test(v.lang)||/indones/i.test(v.name));if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}
+}
+if('speechSynthesis' in window)speechSynthesis.getVoices();
+function setMute(){$('#mute').textContent=muted?'🔇':'🔊';LS.set('pm-muted',muted)}
+$('#mute').onclick=()=>{muted=!muted;setMute();if(muted&&'speechSynthesis' in window)speechSynthesis.cancel()};
+setMute();
+
+let STARS=LS.get('pm-stars',[0,0,0,0,0,0,0,0]);if(!Array.isArray(STARS)||STARS.length!==8)STARS=[0,0,0,0,0,0,0,0];
+function saveStars(){LS.set('pm-stars',STARS);$('#total').textContent=STARS.reduce((a,b)=>a+b,0)}
+const starHTML=n=>`<span class="stars">${[0,1,2].map(i=>`<span class="${i<n?'on':''}">★</span>`).join('')}</span>`;
+
+/* =================== GAMBAR KOMPUTER =================== */
+function pcSVG(){
+  const keys=[];for(let r=0;r<3;r++)for(let c=0;c<10;c++)keys.push(`<rect x="${70+c*15.5}" y="${166+r*11}" width="12" height="8" rx="2" fill="#fff" stroke="#b9c2cf"/>`);
+  return `<svg class="pc" viewBox="0 0 320 222" role="img" aria-label="Gambar komputer">
+    <g class="part" data-part="pengeras"><rect x="14" y="58" width="40" height="80" rx="9" fill="#55617a"/><circle cx="34" cy="82" r="9" fill="#2c3346"/><circle cx="34" cy="116" r="13" fill="#2c3346"/><circle cx="34" cy="116" r="5" fill="#7b88a3"/>
+      <rect x="266" y="58" width="40" height="80" rx="9" fill="#55617a"/><circle cx="286" cy="82" r="9" fill="#2c3346"/><circle cx="286" cy="116" r="13" fill="#2c3346"/><circle cx="286" cy="116" r="5" fill="#7b88a3"/></g>
+    <g class="part" data-part="monitor"><rect x="66" y="8" width="188" height="120" rx="10" fill="#2c3346"/><rect x="76" y="18" width="168" height="98" rx="4" fill="#d6ecff"/>
+      <rect x="76" y="18" width="168" height="16" fill="#fff"/><circle cx="85" cy="26" r="3" fill="#e2504c"/><circle cx="95" cy="26" r="3" fill="#ffc23d"/><circle cx="105" cy="26" r="3" fill="#3e9b4f"/><rect x="114" y="21" width="122" height="10" rx="5" fill="#eef1f5"/>
+      <text x="160" y="70" font-size="26" text-anchor="middle">🐰🦁</text><rect x="96" y="84" width="128" height="6" rx="3" fill="#9cc5ef"/><rect x="96" y="96" width="92" height="6" rx="3" fill="#9cc5ef"/>
+      <rect x="150" y="128" width="20" height="16" fill="#55617a"/><rect x="120" y="142" width="80" height="8" rx="4" fill="#55617a"/></g>
+    <g class="part" data-part="kibor"><rect x="62" y="158" width="170" height="44" rx="8" fill="#dfe5ee" stroke="#9aa6b8" stroke-width="2"/>${keys.join('')}<rect x="104" y="192" width="86" height="6" rx="2" fill="#fff" stroke="#b9c2cf"/></g>
+    <g class="part" data-part="tetikus"><path d="M232 176 C246 170,250 160,262 160" stroke="#55617a" stroke-width="2.5" fill="none"/><ellipse cx="272" cy="186" rx="17" ry="25" fill="#dfe5ee" stroke="#9aa6b8" stroke-width="2"/><path d="M272 161 V180 M255 180 H289" stroke="#9aa6b8" stroke-width="2"/></g>
+  </svg>`;
+}
+
+/* =================== PEMBUAT SOAL =================== */
+function genMagic(){
+  const a=sample(MAGIC,6).map(([e,s,ans])=>({type:'mc',pic:`<div class="big pop">${e}</div>`,sentence:s,prompt:'Kata ajaib apa yang tepat kamu ucapkan?',options:['Maaf','Tolong','Terima kasih'],answer:ans,
+    explain:{Maaf:'Ucapkan maaf saat melakukan kesalahan.',Tolong:'Ucapkan tolong saat meminta bantuan.','Terima kasih':'Ucapkan terima kasih saat menerima bantuan atau kebaikan.'}[ans]}));
+  const b=sample(MAGIC_FILL,2).map(([s,ans,why])=>({type:'mc',sentence:s.replace('___','<span class="blank" id="blank">…</span>'),fill:ans,prompt:'Lengkapi dengan kata ajaib yang tepat!',options:['Maaf','Tolong','Terima kasih'],answer:ans,explain:why}));
+  return shuffle([...a,...b]);
+}
+function genPC(){
+  const taps=sample(PC_TAP,4).map(([p,a])=>({type:'pc',mode:'tap',prompt:p,answer:a}));
+  const names=sample(['monitor','kibor','tetikus','pengeras'],2).map(a=>({type:'pc',mode:'name',prompt:'Apa nama bagian yang menyala?',answer:a}));
+  const mcs=sample(PC_MC,2).map(([p,a,o])=>({type:'mc',prompt:p,options:shuffle(o),answer:a}));
+  return shuffle([...taps,...names,...mcs]);
+}
+function genHyper(){return [...sample(HYPER.filter(h=>h[1]),5),...sample(HYPER.filter(h=>!h[1]),5)].sort(()=>Math.random()-.5).map(([s,y])=>({type:'hyper',s,y}))}
+function genMeaning(){
+  const m=sample(MEANING,6).map(([s,a,o])=>({type:'mc',sentence:s,prompt:'Apa makna sebenarnya?',options:shuffle([a,...o]),answer:a,explain:'Majas hiperbola melebih-lebihkan, jadi maknanya tidak benar-benar terjadi.'}));
+  const v=sample(VOCAB,2).map(([p,a,o])=>({type:'mc',prompt:p,options:shuffle(o),answer:a}));
+  return [...m,...v];
+}
+function genPunct(){
+  const p=sample(PUNCT,6).map(([s,a,why])=>({type:'mc',sentence:`${s}<span class="blank" id="blank">…</span>`,fill:a,prompt:'Tanda baca apa yang tepat di akhir kalimat?',options:['.','?','!',','],big:true,answer:a,explain:why}));
+  const w=sample(WRITE,3).map(([o,why])=>({type:'mc',prompt:'Manakah penulisan yang <b>benar</b>?',options:shuffle(o),answer:o[0],explain:why}));
+  const q={type:'mc',prompt:'Tanda petik (“ ”) digunakan untuk ….',options:shuffle(['mengapit kalimat langsung atau judul puisi','mengakhiri pertanyaan','memisahkan bilangan ribuan','menggantikan huruf kapital']),answer:'mengapit kalimat langsung atau judul puisi'};
+  return [...p,...w,q];
+}
+function genMatch(){const s=shuffle(MATCHES);return [{type:'match',items:s.slice(0,5)},{type:'match',items:s.slice(5)}]}
+function genRead(){
+  return sample(READS,2).flatMap(r=>r.q.map(([p,a,o],i)=>({type:'mc',read:r,first:i===0,prompt:p,options:o.length>3?shuffle(o):o,answer:a})));
+}
+function genStory(){return sample(STORIES,4).map(s=>({type:'story',s}))}
+
+const LEVELS=[
+  {k:'A',t:'Kata Ajaib',     d:'Maaf, tolong, terima kasih',       c:'var(--orange)',f:'🪄',gen:genMagic, how:'Baca situasinya, lalu pilih kata ajaib yang tepat.'},
+  {k:'B',t:'Kenali Komputer',d:'Monitor, kibor, tetikus, peramban', c:'var(--blue)',  f:'💻',gen:genPC,    how:'Ketuk bagian komputer atau pilih jawabannya.'},
+  {k:'C',t:'Hiperbola atau Bukan?',d:'Temukan kalimat yang berlebihan',c:'var(--pink)',f:'🎈',gen:genHyper,how:'Kalimatnya melebih-lebihkan? Pilih Hiperbola. Kalau biasa saja, pilih Bukan.'},
+  {k:'D',t:'Makna Sebenarnya',d:'Arti hiperbola & kosakata',         c:'var(--purple)',f:'🔍',gen:genMeaning,how:'Pilih arti yang sebenarnya dari kalimat itu.'},
+  {k:'E',t:'Tanda Baca',     d:'Titik, tanya, seru, huruf kapital', c:'var(--teal)',  f:'❓',gen:genPunct,  how:'Pilih tanda baca atau penulisan yang benar.'},
+  {k:'F',t:'Jodohkan',       d:'Pasangkan kata dengan artinya',     c:'var(--green)', f:'🧩',gen:genMatch,  how:'Ketuk kata di kiri, lalu ketuk artinya di kanan.'},
+  {k:'G',t:'Detektif Bacaan',d:'Baca cerita, jawab pertanyaan',     c:'var(--red)',   f:'📖',gen:genRead,   how:'Baca bacaannya dulu. Ketuk 🔊 Bacakan kalau ingin didengarkan.'},
+  {k:'H',t:'Susun Cerita',   d:'Bagian awal, tengah, akhir',        c:'#b06a2a',      f:'🧱',gen:genStory,  how:'Ketuk kartu sesuai urutan: awal, tengah, lalu akhir.'}
+];
+
+/* =================== LAYAR =================== */
+let S=null;
+function renderMap(){
+  clearTimers();S=null;
+  const done=STARS.filter(s=>s>0).length;
+  view.innerHTML=`
+  <section class="hello"><span class="kids">🧒💪</span>
+    <div><h2>${done===8?'Kamu benar-benar pantang menyerah!':'Ayo kumpulkan semua lencana!'}</h2>
+    <p>8 permainan dari Bab 3: kata ajaib, komputer, majas hiperbola, tanda baca, bacaan, dan menyusun cerita.</p></div></section>
+  <section class="grid">${LEVELS.map((L,i)=>`
+    <button class="cell" data-i="${i}" aria-label="Permainan ${L.k}: ${L.t}">
+      <span class="tag" style="background:${L.c}">${L.k}</span>
+      <span class="ic">${L.f}</span><b>${L.t}</b><span class="id">${L.d}</span>${starHTML(STARS[i])}
+    </button>`).join('')}</section>
+  <p class="hint">Gagal itu biasa. Coba lagi sampai berhasil! 💪</p>`;
+  $$('.cell').forEach(b=>b.onclick=()=>{sfx.tap();start(+b.dataset.i)});
+}
+function start(i){
+  clearTimers();const L=LEVELS[i];
+  S={i,L,qs:L.gen(),qi:0,miss:0,steps:0,total:0};
+  S.total=S.qs.reduce((n,q)=>n+(q.type==='match'?q.items.length:1),0);
+  renderQ();
+}
+function header(){
+  const L=S.L;
+  return `<div class="head"><button class="back" id="back">← Peta</button>
+    <span class="tag" style="background:${L.c}">${L.k}</span>
+    <div class="t"><h2>${L.t}</h2><p>${L.how}</p></div></div>
+    <div class="progress"><i style="width:${Math.round(S.steps/S.total*100)}%"></i></div>`;
+}
+function bindBack(){$('#back').onclick=()=>{sfx.tap();renderMap()}}
+function setProg(){const p=$('.progress i');if(p)p.style.width=Math.round(S.steps/S.total*100)+'%'}
+function cheer(t,ok){const c=$('#cheer');if(!c)return;c.className='cheer '+(ok?'pop':'oops');c.textContent=t}
+function renderQ(){const q=S.qs[S.qi];({mc:renderMC,pc:renderPC,hyper:renderHyper,match:renderMatch,story:renderStory})[q.type](q)}
+function next(){S.qi++;if(S.qi>=S.qs.length)finish();else renderQ()}
+function step(){S.steps++;setProg()}
+const optsHTML=(o,one,big)=>`<div class="opts${one?' one':''}">${o.map((x,i)=>`<button class="opt${big?' big2':''}" data-i="${i}">${x}</button>`).join('')}</div>`;
+
+/* pilihan ganda umum */
+function renderMC(q){
+  const long=q.options.some(o=>o.length>14);
+  view.innerHTML=header()+`<section class="plate">
+    ${q.read?`<details class="story" ${q.first||window.innerWidth>640?'open':''}><summary>📖 ${q.read.t} <button class="readbtn" id="readbtn">🔊 Bacakan</button></summary><p>${q.read.p}</p></details>`:''}
+    ${q.pic||''}
+    ${q.sentence?`<p class="sentence">${q.sentence}</p>`:''}
+    <p class="prompt">${q.prompt}</p>
+    ${optsHTML(q.options,long,q.big)}
+    <p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+  bindBack();
+  const rb=$('#readbtn');if(rb)rb.onclick=e=>{e.preventDefault();e.stopPropagation();read(q.read.p)};
+  $$('.opt').forEach(b=>b.onclick=()=>{
+    const v=q.options[+b.dataset.i];
+    if(v===q.answer){
+      b.classList.add('right');$$('.opt').forEach(x=>x.disabled=true);sfx.good();
+      if(q.fill){const bl=$('#blank');bl.textContent=q.fill;bl.classList.add('pop')}
+      cheer(`${rnd(PRAISE)} ${q.explain||''}`,true);step();later(next,q.explain?2300:1500);
+    }else{b.classList.add('wrong');b.disabled=true;S.miss++;sfx.bad();cheer(q.explain?`Coba lagi! 💡 ${q.explain}`:'Coba lagi! Kamu pasti bisa 💪',false)}
+  });
+}
+
+/* komputer */
+function renderPC(q){
+  const names=['monitor','kibor','tetikus','pengeras'];
+  view.innerHTML=header()+`<section class="plate">
+    <p class="prompt">${q.prompt}</p>${pcSVG()}
+    ${q.mode==='name'?optsHTML(names.map(n=>PCNAME[n])):''}
+    <p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+  bindBack();
+  const part=n=>$(`.part[data-part="${n}"]`);
+  let done=false;
+  const win=()=>{done=true;part(q.answer).classList.add('ok');sfx.good();step();
+    cheer(`${rnd(PRAISE)} Itu ${PCNAME[q.answer]}.`,true);later(next,1500)};
+  if(q.mode==='name'){
+    part(q.answer).classList.add('hl');
+    $$('.part').forEach(p=>p.style.pointerEvents='none');
+    $$('.opt').forEach(b=>b.onclick=()=>{
+      if(done)return;const v=names[+b.dataset.i];
+      if(v===q.answer){b.classList.add('right');$$('.opt').forEach(x=>x.disabled=true);part(q.answer).classList.remove('hl');win()}
+      else{b.classList.add('wrong');b.disabled=true;S.miss++;sfx.bad();cheer('Coba lagi! Lihat bagian yang menyala.',false)}
+    });
+  }else{
+    $$('.part').forEach(p=>p.onclick=()=>{
+      if(done)return;const n=p.dataset.part;
+      if(n===q.answer)win();
+      else{S.miss++;sfx.bad();p.classList.remove('no');void p.getBBox();p.classList.add('no');cheer(`Itu ${PCNAME[n]}. Coba lagi!`,false)}
+    });
+  }
+}
+
+/* hiperbola atau bukan */
+function renderHyper(q){
+  const plain=q.s.replace(/<\/?mark>/g,'');
+  view.innerHTML=header()+`<section class="plate">
+    <div class="big pop">🎈</div>
+    <p class="sentence" id="sen">${plain}</p>
+    <p class="prompt">Apakah kalimat ini majas hiperbola?</p>
+    <div class="tf"><button class="tfb yes" data-v="1">✓ Hiperbola<small>melebih-lebihkan</small></button><button class="tfb no" data-v="0">✗ Bukan<small>kalimat biasa</small></button></div>
+    <p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+  bindBack();let tries=0;
+  $$('.tfb').forEach(b=>b.onclick=()=>{
+    const v=+b.dataset.v;
+    if(v===q.y){
+      $$('.tfb').forEach(x=>x.disabled=true);sfx.good();step();
+      if(q.y)$('#sen').innerHTML=q.s;
+      cheer(q.y?`${rnd(PRAISE)} Bagian yang berlebihan sudah ditandai kuning.`:`${rnd(PRAISE)} Kalimat ini biasa saja, tidak berlebihan.`,true);
+      later(next,q.y?2300:1600);
+    }else{
+      S.miss++;tries++;sfx.bad();b.disabled=true;
+      cheer(q.y?'Coba lagi! Apakah hal itu benar-benar bisa terjadi?':'Coba lagi! Kalimat ini menceritakan hal biasa.',false);
+    }
+  });
+}
+
+/* jodohkan */
+function renderMatch(q){
+  const left=shuffle(q.items),right=shuffle(q.items);let sel=null;const done=new Set();
+  view.innerHTML=header()+`<section class="plate">
+    <p class="prompt">Pasangkan kata dengan arti yang tepat.</p>
+    <div class="match"><div class="col">${left.map(x=>`<button class="mcard word" data-side="l" data-k="${x[0]}">${x[0]}</button>`).join('')}</div>
+    <div class="col">${right.map(x=>`<button class="mcard" data-side="r" data-k="${x[0]}">${x[1]}</button>`).join('')}</div></div>
+    <p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+  bindBack();
+  const cards=$$('.mcard');
+  cards.forEach(b=>b.onclick=()=>{
+    if(done.has(b.dataset.k)||b.classList.contains('done'))return;
+    if(!sel||sel.dataset.side===b.dataset.side){cards.forEach(x=>x.classList.remove('sel'));sel=b;b.classList.add('sel');sfx.tap();return}
+    const a=sel;sel=null;a.classList.remove('sel');
+    if(a.dataset.k===b.dataset.k){
+      done.add(b.dataset.k);[a,b].forEach(x=>{x.classList.add('done');x.disabled=true});sfx.good();step();
+      cheer(`${rnd(PRAISE)} ${b.dataset.k}`,true);
+      if(done.size===q.items.length)later(next,1300);
+    }else{S.miss++;sfx.bad();[a,b].forEach(x=>{x.classList.remove('wrong');void x.offsetWidth;x.classList.add('wrong')});cheer('Belum cocok. Coba lagi!',false)}
+  });
+}
+
+/* susun cerita awal-tengah-akhir */
+function renderStory(q){
+  const parts=q.s.p.map((t,i)=>({t,i})),order=shuffle(parts);let placed=[];
+  const K=['Awal','Tengah','Akhir'];
+  view.innerHTML=header()+`<section class="plate">
+    <p class="prompt">Susun cerita “<b>${q.s.t}</b>”</p>
+    <div class="slots">${K.map((k,i)=>`<div class="slot"><span class="k" style="background:${PARTCOL[i]}">${k}</span><div class="v" data-i="${i}"></div></div>`).join('')}</div>
+    <div class="cards" id="cards"></div>
+    <div class="actions"><button class="btn ghost" id="reset">↺ Ulangi</button><button class="btn teal" id="readall">🔊 Bacakan</button><button class="btn" id="check" disabled>Periksa ✓</button></div>
+    <p class="cheer" id="cheer" aria-live="polite"></p></section>`;
+  bindBack();
+  const draw=()=>{
+    $$('.slot .v').forEach((v,i)=>{const p=placed[i];v.className='v'+(p?' filled':'');v.textContent=p?p.t:'';v.onclick=()=>{if(p&&!$('#check').dataset.lock){placed.splice(i,1);sfx.tap();draw()}}});
+    $('#cards').innerHTML=order.filter(p=>!placed.includes(p)).map(p=>`<button class="scard" data-i="${p.i}">${p.t}</button>`).join('');
+    $$('.scard').forEach(c=>c.onclick=()=>{sfx.tap();placed.push(parts[+c.dataset.i]);draw()});
+    $('#check').disabled=placed.length<3;
+  };
+  draw();
+  $('#reset').onclick=()=>{if($('#check').dataset.lock)return;placed=[];draw()};
+  $('#readall').onclick=()=>read((placed.length?placed:parts).map(p=>p.t).join(' '));
+  $('#check').onclick=()=>{
+    const ok=placed.every((p,i)=>p.i===i);
+    if(ok){$('#check').dataset.lock=1;$$('.slot .v').forEach(v=>v.classList.add('good'));$('#check').disabled=true;sfx.good();step();
+      cheer(`${rnd(PRAISE)} Ceritanya sudah urut: awal → tengah → akhir.`,true);later(next,2300)}
+    else{S.miss++;sfx.bad();$$('.slot .v').forEach((v,i)=>{if(placed[i].i!==i)v.classList.add('bad')});
+      cheer('Belum urut. Awal = perkenalan, tengah = masalah atau usaha, akhir = penyelesaian.',false)}
+  };
+}
+
+/* hasil */
+function finish(){
+  const lim=['F','C'].includes(S.L.k)?[2,4]:[1,3];
+  const st=S.miss<=lim[0]?3:S.miss<=lim[1]?2:1;
+  STARS[S.i]=Math.max(STARS[S.i],st);saveStars();
+  const i=S.i,nextI=(i+1)%LEVELS.length;
+  view.innerHTML=`<section class="plate result">
+    <div class="big-stars">${[0,1,2].map(k=>`<span class="${k<st?'on':''}" style="animation-delay:${k*.18}s">★</span>`).join('')}</div>
+    <h2>${st===3?'Sempurna!':st===2?'Bagus sekali!':'Terus berlatih, jangan menyerah!'}</h2>
+    <p>${S.L.f} ${S.L.t} — ${S.miss===0?'tanpa kesalahan':S.miss+' kali salah'}</p>
+    <div class="actions"><button class="btn ghost" id="again">↺ Main lagi</button>
+    <button class="btn" id="nxt">Lanjut: ${LEVELS[nextI].t} →</button>
+    <button class="btn teal" id="menu">Peta</button></div></section>`;
+  sfx.win();confetti();
+  $('#again').onclick=()=>start(i);$('#nxt').onclick=()=>start(nextI);$('#menu').onclick=renderMap;
+}
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const cv=$('#fx'),cx=cv.getContext('2d');cv.width=innerWidth;cv.height=innerHeight;
+  const E=['⭐','💪','📚','🎈','✏️','🏅'];
+  const P=Array.from({length:44},()=>({x:Math.random()*cv.width,y:-30-Math.random()*cv.height*.5,v:2+Math.random()*3.5,r:Math.random()*6,s:18+Math.random()*16,e:rnd(E),w:Math.random()*.1-.05}));
+  let t=0;(function f(){cx.clearRect(0,0,cv.width,cv.height);
+    P.forEach(p=>{p.y+=p.v;p.r+=p.w;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.font=p.s+'px serif';cx.fillText(p.e,0,0);cx.restore()});
+    if(++t<170)requestAnimationFrame(f);else cx.clearRect(0,0,cv.width,cv.height)})();
+}
+
+$('#brand').onclick=renderMap;
+saveStars();renderMap();
+</script>
+</body>
+</html>
